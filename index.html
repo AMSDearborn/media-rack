@@ -471,7 +471,7 @@
                 unit: 2,
                 name: "CyberPower 10-Switch PDU",
                 type: "power",
-                powerSource: "Surge-Only (Wall)",
+                powerSource: "Surge-Only (UPS)",
                 maintenance: "Do not plug into UPS Battery side.",
                 desc: "Main power distribution unit allowing individual hard-reboots of AV systems without unplugging cables.",
                 connections: [
@@ -489,7 +489,7 @@
                 maintenance: "Placed at bottom for coldest intake air. Check temps monthly.",
                 desc: "Network Attached Storage for media archives and IT backups. Requires the coolest air in the rack, hence its placement at Unit 3.",
                 connections: [
-                    "Ethernet to Unit 7 (Network Switch)"
+                    "Ethernet to Port 7 on Patch Panel (U8)"
                 ]
             },
             {
@@ -509,9 +509,10 @@
                 maintenance: "CRITICAL: Blow dust out weekly. Very prone to overheating.",
                 desc: "The core of the live stream. Receives camera feeds, processes the broadcast, and outputs the main stream as well as an Aux feed for the local TVs.",
                 connections: [
-                    "Inputs: Cams 1-4 from Patch Panel (U8)",
-                    "Output (Live): Network Switch (U7)",
-                    "Output (Aux): SDI out to Sisters TV System (U9)"
+                    "Inputs: Cams 1-4 from Wall",
+                    "Output (Program): SDI out from ATEM to Web Presenter",
+                    "Output (Aux): SDI out to Sisters TV System (U9)",
+                    "Output (Multiview): HDMI to Media TV Wall (Top Left Port)"
                 ]
             },
             {
@@ -531,8 +532,15 @@
                 maintenance: "Tolerates heat well.",
                 desc: "Core network switch providing Data and Power over Ethernet (PoE) to cameras, access points, and encoders.",
                 connections: [
-                    "Port 20: Backup Sisters TV",
-                    "Port 21: Main Sisters TV",
+                    "Port 1: Lecture Camera",
+                    "Port 2: Khutbah Camera",
+                    "Port 3: Prayer Camera",
+                    "Port 4: Back Camera",
+                    "Port 5: Web Presenter",
+                    "Port 6: ATEM Video Switcher",
+                    "Port 7: NAS",
+                    "Port 8-16: Media Office Wall Plugs",
+                    "Port 17 - 23: BLANK",
                     "Port 24: Upstream Internet"
                 ]
             },
@@ -544,11 +552,20 @@
                 maintenance: "Do not bend cables sharply.",
                 desc: "Terminates all wall-runs from the building. Keeps the rack neat by allowing short patch cables to the switch.",
                 connections: [
-                    "Ports 1-4 (Yellow): Main Cameras (Lecture, Khutbah, Prayer, Back)",
-                    "Ports 8-16 (White): Media Office Wall Plugs",
-                    "Port 19: Cat6 out to Basement HDMI Receiver",
-                    "Port 20 - 21: Cat6 out to Sisters TV HDMI Receiver",
-                    "Ports 22-24: Internet & Uplinks"
+                    "Port 1: Lecture Camera",
+                    "Port 2: Khutbah Camera",
+                    "Port 3: Prayer Camera",
+                    "Port 4: Back Camera",
+                    "Port 5: Web Presenter",
+                    "Port 6: ATEM Video Switcher",
+                    "Port 7: NAS",
+                    "Port 8-16 (White): Media Office Wall Plugs",
+                    "Port 17: BLANK",
+                    "Port 18: HDMI Out to Projector Matrix",
+                    "Port 19: Ethernet out to Basement HDMI Receiver",
+                    "Port 20 - 21: Ethernet out to Sisters TV HDMI Receiver",
+                    "Port 22: Access Point?",
+                    "Ports 23-24: Upstream (MDF)"
                 ]
             },
             {
@@ -559,9 +576,10 @@
                 maintenance: "Uses small 5V adapters. Ensure they are zip-tied neatly.",
                 desc: "Complex routing system taking a clean Aux feed from the ATEM and distributing it to the projectors and the Sisters' section TVs.",
                 connections: [
-                    "SDI from ATEM Aux",
-                    "HDMI to Media Office Laptop Wall Plug",
-                    "Cat6 Extender through Patch Panel Port 19"
+                    "Input: SDI from ATEM Aux",
+                    "Input: HDMI in from Media Desk 1 Wall (Right Port)",
+                    "Output: Ethernet to Patch Panel Port 21 (Sisters HDMI Receiver)",
+                    "Output: Ethernet (HDBaseT) to Projector Matrix",
                 ],
                 isComplex: true
             },
@@ -579,9 +597,9 @@
                 unit: 11,
                 name: "Announcement TVs (Future)",
                 type: "future",
-                powerSource: "Will use PoE (Switch)",
+                powerSource: "Power Strip (Ch. 2)",
                 maintenance: "Currently acting as a blanking panel.",
-                desc: "Reserved space for the upcoming Announcement TV system. Will be powered entirely via PoE from the Network Switch.",
+                desc: "Reserved space for the upcoming Announcement TV system.",
                 connections: []
             },
             { unit: 12, name: "Blanking Panel", type: "blank", powerSource: "None", maintenance: "Do not remove.", desc: "Solid metal panel. Prevents top exhaust fans from sucking hot room air through the front, forcing a vacuum that pulls cold air from Units 4 & 6.", connections: [] },
@@ -709,14 +727,14 @@
                     <div class="arrow">↓ <span>HDMI</span></div>
                     
                     <div class="node splitter">
-                        HDMI Splitter / Extender
+                        HDMI Splitter
                         <small>Splits to Sisters & Projectors</small>
                     </div>
                     
                     <div class="split-path">
                         <!-- Path A: Sisters -->
                         <div class="split-branch">
-                            <div class="arrow">↓ <span>Cat6 (Patch U8, P19)</span></div>
+                            <div class="arrow">↓ <span>Cat6 (Patch U8, P21)</span></div>
                             <div class="node converter">
                                 Extender Receiver
                                 <small>Through wall to Sisters Side</small>
@@ -729,11 +747,11 @@
                         <div class="split-branch">
                             <div class="arrow">↓ <span>HDMI</span></div>
                             <div class="node splitter" style="border-left-color: #ec4899">
-                                HDMI Matrix Switch
-                                <small>Input 1: ATEM Stream<br>Input 2: Laptop Wall Plug</small>
+                                HDMI Switch
+                                <small>Input 1: ATEM (AUX)<br>Input 2: Desk 1 Wall Plug (Right) </small>
                             </div>
                             <div class="arrow">↓ <span>HDMI</span></div>
-                            <div class="node end">Main Projectors</div>
+                            <div class="node end">Main Projector Matrix</div>
                         </div>
                     </div>
                 </div>
