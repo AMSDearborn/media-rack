@@ -1,788 +1,1397 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMS Media Rack Architecture</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- SVG Rack Favicon -->
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect x=%2210%22 y=%2210%22 width=%2280%22 height=%2280%22 rx=%228%22 fill=%22%23111827%22 stroke=%22%233b82f6%22 stroke-width=%226%22/><line x1=%2220%22 y1=%2230%22 x2=%2280%22 y2=%2230%22 stroke=%22%23374151%22 stroke-width=%228%22/><line x1=%2220%22 y1=%2250%22 x2=%2280%22 y2=%2250%22 stroke=%22%23374151%22 stroke-width=%228%22/><line x1=%2220%22 y1=%2270%22 x2=%2280%22 y2=%2270%22 stroke=%22%23374151%22 stroke-width=%228%22/><circle cx=%2230%22 cy=%2250%22 r=%224%22 fill=%22%2322c55e%22/></svg>"
+    />
+
+    <title>AMS Media Rack</title>
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap');
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap");
 
-        :root {
-            --bg-dark: #0f172a;
-            --bg-panel: #1e293b;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-color: #334155;
-            
-            /* Unit Categories */
-            --color-power: #f59e0b;
-            --color-data: #3b82f6;
-            --color-storage: #10b981;
-            --color-av: #8b5cf6;
-            --color-empty: #0f172a;
-            --color-blank: #475569;
-            --color-future: #ec4899;
+      :root {
+        --bg-dark: #0a0f18;
+        --bg-panel: #111827;
+        --bg-card: #1f2937;
+        --text-main: #f3f4f6;
+        --text-muted: #9ca3af;
+        --border-color: #374151;
 
-            --color-airflow-cool: #38bdf8;
-            --color-airflow-hot: #ef4444;
+        /* Category Colors */
+        --c-power: #f59e0b;
+        --c-ups: #22c55e;
+        --c-data: #3b82f6;
+        --c-storage: #10b981;
+        --c-av: #8b5cf6;
+        --c-cam: #eab308;
+        --c-uplink: #2dd4bf;
+        --c-audio: #d946ef;
+
+        --c-airflow-cool: #38bdf8;
+        --c-airflow-hot: #ef4444;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--bg-dark);
+        color: var(--text-main);
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      /* HEADER */
+      header {
+        background-color: var(--bg-panel);
+        padding: 1.25rem 2rem;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 50;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      .header-title h1 {
+        font-size: 1.5rem;
+        font-weight: 800;
+        background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .header-title p {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        font-family: "JetBrains Mono", monospace;
+        margin-top: 4px;
+      }
+
+      /* VIEW MODES */
+      .toggles {
+        display: flex;
+        gap: 0.5rem;
+        background: var(--bg-card);
+        padding: 0.5rem;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        flex-wrap: wrap;
+      }
+      .toggle-btn {
+        background: transparent;
+        border: none;
+        color: var(--text-muted);
+        padding: 0.5rem 0.75rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.8rem;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .toggle-btn:hover {
+        color: var(--text-main);
+        background: rgba(255, 255, 255, 0.05);
+      }
+      .toggle-btn.active {
+        background: var(--bg-panel);
+        color: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        border: 1px solid var(--border-color);
+      }
+
+      /* MAIN LAYOUT */
+      main {
+        display: grid;
+        grid-template-columns: 360px 1fr;
+        gap: 2rem;
+        padding: 2rem;
+        flex: 1;
+        max-width: 1600px;
+        margin: 0 auto;
+        width: 100%;
+      }
+
+      /* LEFT RACK */
+      .rack-wrapper {
+        position: relative;
+      }
+      .rack-legend {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 12px;
+        justify-content: center;
+        font-size: 0.65rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        flex-wrap: wrap;
+      }
+      .rl-item {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .rl-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 2px;
+      }
+
+      .rack-container {
+        background: #000;
+        border: 4px solid #1f2937;
+        border-radius: 6px;
+        padding: 0.5rem;
+        display: flex;
+        flex-direction: column-reverse;
+        gap: 4px;
+        position: relative;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      }
+      .rack-container::before,
+      .rack-container::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 20px;
+        background-image: radial-gradient(#4b5563 2px, transparent 2.5px);
+        background-size: 10px 14px;
+        z-index: 1;
+      }
+      .rack-container::before {
+        left: 0;
+        border-right: 2px solid #111827;
+      }
+      .rack-container::after {
+        right: 0;
+        border-left: 2px solid #111827;
+      }
+
+      /* SVG Overlays */
+      #svg-layer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 15;
+        transition: opacity 0.3s ease;
+      }
+
+      .rack-unit {
+        height: 40px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        padding: 0 1rem;
+        position: relative;
+        z-index: 2;
+        transition: all 0.2s ease;
+        margin: 0 15px;
+        background: var(--bg-panel);
+        border: 1px solid var(--border-color);
+      }
+      .clickable {
+        cursor: pointer;
+      }
+      .clickable:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        z-index: 20;
+        border-color: var(--text-muted);
+      }
+
+      /* Highlighting Logic */
+      .rack-container.has-selection
+        .rack-unit:not(.selected):not(.related-highlight) {
+        opacity: 0.25;
+        filter: grayscale(80%);
+      }
+      .rack-unit.selected {
+        border-color: #fff;
+        background: var(--bg-card);
+        z-index: 20;
+      }
+      .rack-unit.related-highlight {
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.4);
+        z-index: 15;
+      }
+
+      .unit-num {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        width: 35px;
+        font-weight: bold;
+      }
+      .unit-name {
+        font-weight: 600;
+        font-size: 0.85rem;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .u-pow {
+        border-left: 4px solid var(--c-power);
+      }
+      .u-dat {
+        border-left: 4px solid var(--c-data);
+      }
+      .u-sto {
+        border-left: 4px solid var(--c-storage);
+      }
+      .u-av {
+        border-left: 4px solid var(--c-av);
+      }
+      .u-blk {
+        background: #1f2937;
+        border: 1px solid #111827;
+        color: #4b5563;
+      }
+      .u-emp {
+        background: transparent;
+        border: 1px dashed #374151;
+        color: #4b5563;
+      }
+      .rack-unit[data-id="9"] {
+        height: 84px;
+        align-items: flex-start;
+        padding-top: 10px;
+      }
+
+      .status-led {
+        min-width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #22c55e;
+        box-shadow: 0 0 8px #22c55e;
+        margin-left: auto;
+        animation: blink 2s infinite;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        50% {
+          opacity: 0.3;
         }
+      }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            overflow-x: hidden;
+      /* RIGHT DETAILS PANEL */
+      .panel {
+        background: var(--bg-panel);
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        overflow: hidden;
+      }
+      .header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 1rem;
+      }
+      .title-block h2 {
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+      }
+      .badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      .empty-state {
+        text-align: center;
+        color: var(--text-muted);
+        padding: 4rem 1rem;
+      }
+      .empty-state svg {
+        width: 48px;
+        height: 48px;
+        opacity: 0.2;
+        margin-bottom: 1rem;
+      }
+
+      /* ATEM & WP VISUALIZER */
+      .sys-diagram {
+        display: flex;
+        gap: 1.5rem;
+        background: var(--bg-card);
+        padding: 1.5rem;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: stretch;
+      }
+      .sys-col {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        flex: 1;
+        min-width: 150px;
+        justify-content: center;
+      }
+
+      .sys-group {
+        background: var(--bg-panel);
+        padding: 0.75rem;
+        border-radius: 6px;
+        border: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .sys-lbl {
+        font-size: 0.6rem;
+        color: var(--text-muted);
+        font-weight: bold;
+        letter-spacing: 1px;
+        text-align: center;
+      }
+
+      .sys-port {
+        background: #000;
+        border: 1px solid var(--border-color);
+        font-size: 0.7rem;
+        padding: 6px 8px;
+        border-radius: 4px;
+        color: var(--text-main);
+        font-family: "JetBrains Mono", monospace;
+        text-align: center;
+      }
+      .sys-port.yel {
+        border-left: 3px solid var(--c-cam);
+      }
+      .sys-port.pur {
+        border-left: 3px solid var(--c-audio);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .sys-port.blu {
+        border-left: 3px solid var(--c-data);
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .sys-port.out {
+        display: flex;
+        justify-content: space-between;
+        text-align: left;
+        background: var(--bg-panel);
+        gap: 10px;
+      }
+      .sys-port.out span {
+        color: var(--text-muted);
+        font-size: 0.65rem;
+      }
+
+      .sys-hw {
+        background: linear-gradient(180deg, #1f2937, #111827);
+        border: 2px solid;
+        border-radius: 8px;
+        padding: 1rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        display: flex;
+        flex-direction: column;
+        min-height: 180px;
+        flex: 1.5;
+        min-width: 200px;
+      }
+      .sys-hw.atem {
+        border-color: var(--c-av);
+      }
+      .sys-hw.wp {
+        border-color: var(--c-data);
+        flex: 1;
+        min-width: 160px;
+      }
+      .sys-hw h3 {
+        font-size: 1rem;
+        text-align: center;
+        margin: 0 0 1rem 0;
+        color: #fff;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 0.5rem;
+      }
+
+      .hw-out-ports {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-top: auto;
+      }
+      .sys-arrow-box {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--border-color);
+        font-size: 1.5rem;
+        min-width: 40px;
+      }
+      .sys-arrow-box small {
+        position: absolute;
+        top: -15px;
+        font-size: 0.6rem;
+        color: var(--text-main);
+        white-space: nowrap;
+      }
+
+      .y-split {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .y-split span {
+        background: var(--c-audio);
+        color: #000;
+        font-size: 0.55rem;
+        font-weight: bold;
+        padding: 1px 4px;
+        border-radius: 2px;
+        line-height: 1;
+      }
+
+      /* Port Visualizer (Responsive Grid) */
+      .port-visualizer {
+        background: var(--bg-card);
+        padding: 1.5rem;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        width: 100%;
+      }
+      .port-grid {
+        display: grid;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        gap: 4px;
+        margin-bottom: 6px;
+        width: 100%;
+      }
+      .port {
+        aspect-ratio: 1;
+        background: #000;
+        border: 2px solid #374151;
+        border-radius: 4px;
+        position: relative;
+        cursor: pointer;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "JetBrains Mono";
+        font-size: clamp(0.5rem, 1.5vw, 0.7rem);
+        color: #4b5563;
+        padding: 0;
+      }
+      .port:hover {
+        border-color: #fff;
+        transform: translateY(-2px);
+        z-index: 10;
+      }
+      .pt-cam {
+        border-color: var(--c-cam);
+        background: rgba(234, 179, 8, 0.1);
+        color: var(--c-cam);
+      }
+      .pt-dat {
+        border-color: var(--c-data);
+        background: rgba(59, 130, 246, 0.1);
+        color: var(--c-data);
+      }
+      .pt-av {
+        border-color: var(--c-av);
+        background: rgba(139, 92, 246, 0.1);
+        color: var(--c-av);
+      }
+      .pt-up {
+        border-color: var(--c-uplink);
+        background: rgba(45, 212, 191, 0.1);
+        color: var(--c-uplink);
+      }
+
+      .port::after {
+        content: attr(data-tip);
+        position: absolute;
+        bottom: 120%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #fff;
+        color: #000;
+        padding: 6px 10px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        transition: 0.2s;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        z-index: 50;
+      }
+      .port:hover::after {
+        opacity: 1;
+        bottom: 140%;
+      }
+
+      .port-legend {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+        font-size: 0.75rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .leg-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--text-muted);
+      }
+      .leg-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 2px;
+      }
+
+      /* U9 AV Flowchart */
+      .av-flow {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 2rem;
+        position: relative;
+        font-size: 0.85rem;
+        width: 100%;
+      }
+      .flow-row {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        position: relative;
+        z-index: 2;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+      }
+      .flow-row:last-child {
+        margin-bottom: 0;
+      }
+      .f-node {
+        background: var(--bg-panel);
+        border: 1px solid var(--border-color);
+        padding: 1rem;
+        border-radius: 8px;
+        width: 100%;
+        max-width: 200px;
+        text-align: center;
+        position: relative;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      }
+      .f-node strong {
+        display: block;
+        margin-bottom: 4px;
+        color: #fff;
+      }
+      .f-node small {
+        color: var(--text-muted);
+        font-size: 0.7rem;
+        line-height: 1.4;
+        display: block;
+      }
+      .f-badge {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        background: var(--c-power);
+        color: #000;
+        font-size: 0.65rem;
+        font-weight: 800;
+        padding: 2px 6px;
+        border-radius: 4px;
+      }
+      .f-line-v {
+        width: 2px;
+        height: 2rem;
+        background: var(--border-color);
+        margin: 0 auto;
+        position: relative;
+      }
+      .f-fork {
+        display: flex;
+        justify-content: center;
+        position: relative;
+        width: 100%;
+        height: 2rem;
+      }
+      .f-fork-h {
+        position: absolute;
+        top: 0;
+        width: 314px;
+        max-width: 400px;
+        height: 2px;
+        translate: 58px;
+        background: var(--border-color);
+      }
+      .f-fork-v {
+        position: absolute;
+        top: 0;
+        width: 2px;
+        height: 100%;
+        background: var(--border-color);
+      }
+      .f-fork-v.left {
+        left: calc(50% - 100px);
+      }
+      .f-fork-v.right {
+        left: calc(50% + 215px);
+      }
+
+      /* Airflow Overlays */
+      body.mode-airflow .rack-container {
+        border-color: var(--c-airflow-cool);
+      }
+      body.mode-airflow .u-emp {
+        background: rgba(56, 189, 248, 0.1);
+        border-color: var(--c-airflow-cool);
+      }
+      body.mode-airflow .u-blk {
+        background: rgba(239, 68, 68, 0.1);
+        border-color: var(--c-airflow-hot);
+        color: var(--c-airflow-hot);
+      }
+      .air-particle {
+        position: absolute;
+        width: 4px;
+        height: 15px;
+        border-radius: 2px;
+        background: var(--c-airflow-cool);
+        opacity: 0;
+        pointer-events: none;
+        z-index: 20;
+      }
+      body.mode-airflow .p-in {
+        animation: flowCool 2s infinite;
+        box-shadow: 0 0 10px var(--c-airflow-cool);
+      }
+      body.mode-airflow .p-out {
+        animation: flowHot 2s infinite;
+        background: var(--c-airflow-hot);
+        box-shadow: 0 0 10px var(--c-airflow-hot);
+      }
+      @keyframes flowCool {
+        0% {
+          transform: translateY(20px);
+          opacity: 0;
         }
-
-        /* HEADER */
-        header {
-            background-color: var(--bg-panel);
-            padding: 1rem 2rem;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            z-index: 10;
+        50% {
+          opacity: 1;
         }
-
-        .header-title h1 {
-            font-size: 1.5rem;
-            font-weight: 800;
-            letter-spacing: -0.5px;
+        100% {
+          transform: translateY(-40px);
+          opacity: 0;
         }
-
-        .header-title p {
-            color: var(--text-muted);
-            font-size: 0.875rem;
+      }
+      @keyframes flowHot {
+        0% {
+          transform: translateY(10px);
+          opacity: 0;
         }
-
-        .toggles {
-            display: flex;
-            gap: 1rem;
+        50% {
+          opacity: 1;
         }
-
-        .toggle-btn {
-            background-color: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        100% {
+          transform: translateY(-50px);
+          opacity: 0;
         }
+      }
 
-        .toggle-btn:hover {
-            background-color: var(--border-color);
-            color: var(--text-main);
-        }
+      /* Global Power Mode Override */
+      body.mode-power .rack-container {
+        border-color: transparent;
+      }
+      body.mode-power
+        .rack-container.has-selection
+        .rack-unit:not(.selected):not(.related-highlight) {
+        opacity: 0.1;
+      }
+      body.mode-power .rack-unit {
+        opacity: 0.15;
+        border-color: #374151;
+      }
+      body.mode-power .rack-unit[data-pwr="ups"] {
+        opacity: 1;
+        border-color: var(--c-ups);
+        box-shadow: inset 20px 0 30px -20px var(--c-ups);
+      }
+      body.mode-power .rack-unit[data-pwr="pdu"] {
+        opacity: 1;
+        border-color: var(--c-power);
+        box-shadow: inset 20px 0 30px -20px var(--c-power);
+      }
+      body.mode-power .rack-unit[data-id="1"] {
+        opacity: 1;
+        border-color: var(--c-ups);
+      }
+      body.mode-power .rack-unit[data-id="2"] {
+        opacity: 1;
+        border-color: var(--c-power);
+      }
+      body.mode-power #svg-layer {
+        opacity: 1;
+      }
 
-        .toggle-btn.active {
-            border-color: var(--text-main);
-            color: var(--text-main);
-            background-color: rgba(255, 255, 255, 0.05);
-        }
-
-        /* MAIN LAYOUT */
+      /* Mobile Adjustments */
+      @media (max-width: 1024px) {
         main {
-            display: grid;
-            grid-template-columns: 450px 1fr;
-            gap: 2rem;
-            flex: 1;
-            padding: 2rem;
-            max-width: 1600px;
-            margin: 0 auto;
-            width: 100%;
+          grid-template-columns: 1fr;
+          padding: 1rem;
         }
-
-        /* RACK VISUALIZER */
-        .rack-container {
-            background-color: #020617;
-            border: 4px solid #334155;
-            border-radius: 8px;
-            padding: 1rem;
-            display: flex;
-            flex-direction: column-reverse; /* U1 at bottom, U15 at top */
-            gap: 4px;
-            position: relative;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+        .rack-wrapper {
+          max-width: 450px;
+          margin: 0 auto;
+          width: 100%;
         }
-
-        /* Rails */
-        .rack-container::before, .rack-container::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 20px;
-            background-image: radial-gradient(#475569 2px, transparent 2.5px);
-            background-size: 10px 15px;
-            z-index: 1;
+        .panel {
+          padding: 1.5rem;
         }
-        .rack-container::before { left: 0; border-right: 2px solid #1e293b; }
-        .rack-container::after { right: 0; border-left: 2px solid #1e293b; }
-
-        /* Cables Sidebar Info */
-        .cable-indicator {
-            position: absolute;
-            top: -25px;
-            font-size: 0.75rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            opacity: 0.5;
+      }
+      @media (max-width: 768px) {
+        .sys-arrow-box {
+          display: none;
+        } /* Hide horizontal arrows on wrap */
+        .f-fork,
+        .f-fork-h,
+        .f-fork-v {
+          display: none;
+        } /* Simplify AV flow on tiny screens */
+        .av-flow .flow-row {
+          gap: 1rem;
         }
-        .cable-indicator.left { left: 10px; color: var(--color-data); }
-        .cable-indicator.right { right: 10px; color: var(--color-power); }
-
-        .rack-unit {
-            height: 38px; /* Approx 1U */
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            padding: 0 1rem;
-            cursor: pointer;
-            position: relative;
-            z-index: 2;
-            transition: all 0.2s ease;
-            border: 1px solid transparent;
-            margin: 0 15px;
-            background-color: var(--bg-panel);
-            overflow: hidden;
-        }
-
-        .rack-unit:hover {
-            transform: scale(1.02);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-            z-index: 10;
-        }
-
-        .rack-unit.selected {
-            border-color: #fff;
-            box-shadow: 0 0 15px rgba(255,255,255,0.2);
-        }
-
-        .unit-number {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            width: 30px;
-        }
-
-        .unit-label {
-            font-weight: 600;
-            font-size: 0.85rem;
-            flex: 1;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
-        }
-
-        .led {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background-color: #22c55e;
-            box-shadow: 0 0 8px #22c55e;
-            animation: blink 2s infinite;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
-
-        /* Unit Types */
-        .unit-power { border-left: 4px solid var(--color-power); }
-        .unit-data { border-left: 4px solid var(--color-data); }
-        .unit-storage { border-left: 4px solid var(--color-storage); }
-        .unit-av { border-left: 4px solid var(--color-av); }
-        .unit-future { border-left: 4px solid var(--color-future); border-style: dashed; }
-        .unit-blank { background-color: #334155; border: 1px solid #1e293b; color: #64748b; }
-        .unit-empty { background-color: transparent; border: 1px dashed #334155; color: #475569; }
-
-        /* Double unit sizing (U9/U10 combined for AV) */
-        .rack-unit[data-id="9"] { height: 80px; align-items: flex-start; padding-top: 10px; }
-        .rack-unit[data-id="10"] { display: none; } /* Handled visually by U9 */
-
-        /* DETAILS PANEL */
-        .details-panel {
-            background-color: var(--bg-panel);
-            border-radius: 12px;
-            padding: 2.5rem;
-            border: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-            height: fit-content;
-        }
-
-        .empty-state {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            color: var(--text-muted);
-            text-align: center;
-            min-height: 400px;
-        }
-
-        .empty-state div { font-size: 3rem; margin-bottom: 1rem; opacity: 0.2; }
-
-        .info-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 1rem;
-        }
-
-        .info-title { font-size: 1.75rem; font-weight: 800; color: var(--text-main); }
-        .info-type-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .info-desc { color: #cbd5e1; line-height: 1.6; font-size: 1.05rem; }
-
-        .meta-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            background-color: rgba(0,0,0,0.2);
-            padding: 1.5rem;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-        }
-
-        .meta-item label {
-            display: block;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            font-weight: 700;
-            margin-bottom: 0.25rem;
-        }
-        .meta-item p { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; }
-
-        /* COMPLEX FLOWCHART SYSTEM (U9 specific) */
-        .complex-system-diagram {
-            margin-top: 2rem;
-            background: #0f172a;
-            border-radius: 12px;
-            padding: 2rem;
-            border: 1px solid #1e293b;
-        }
-
-        .diagram-title {
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--color-av);
-            font-weight: 800;
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-
-        .flow-grid {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-            position: relative;
-        }
-
-        .node {
-            background: var(--bg-panel);
-            border: 1px solid var(--border-color);
-            padding: 1rem;
-            border-radius: 8px;
-            text-align: center;
-            width: 260px;
-            font-weight: 600;
-            position: relative;
-            z-index: 2;
-        }
-
-        .node.source { border-top: 3px solid var(--color-av); }
-        .node.converter { border-left: 3px solid #eab308; }
-        .node.splitter { border-left: 3px solid #3b82f6; }
-        .node.end { background: #1e293b; border: 1px solid #475569; }
-
-        .node small { display: block; font-size: 0.7rem; color: var(--text-muted); margin-top: 5px; font-weight: normal; }
-
-        .arrow {
-            color: var(--text-muted);
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .arrow span { font-size: 0.7rem; font-family: monospace; background: #1e293b; padding: 2px 6px; border-radius: 4px;}
-
-        .split-path {
-            display: flex;
-            gap: 2rem;
-            margin-top: 0.5rem;
-            position: relative;
-            width: 100%;
-            justify-content: center;
-        }
-
-        .split-branch {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        /* MODES (Airflow & Power) */
-        body.mode-airflow .rack-container { border-color: var(--color-airflow-cool); }
-        body.mode-airflow .unit-empty { background-color: rgba(56, 189, 248, 0.1); border-color: var(--color-airflow-cool); }
-        body.mode-airflow .unit-blank { background-color: rgba(239, 68, 68, 0.1); border-color: var(--color-airflow-hot); color: var(--color-airflow-hot); }
-        
-        .airflow-particle {
-            position: absolute;
-            width: 4px;
-            height: 15px;
-            border-radius: 2px;
-            background: var(--color-airflow-cool);
-            opacity: 0;
-            pointer-events: none;
-            z-index: 20;
-        }
-
-        body.mode-airflow .particle-intake { animation: flowUpCool 2s infinite; background: var(--color-airflow-cool); box-shadow: 0 0 10px var(--color-airflow-cool); }
-        body.mode-airflow .particle-exhaust { animation: flowUpHot 2s infinite; background: var(--color-airflow-hot); box-shadow: 0 0 10px var(--color-airflow-hot); }
-
-        @keyframes flowUpCool {
-            0% { transform: translateY(20px); opacity: 0; }
-            50% { opacity: 1; }
-            100% { transform: translateY(-40px); opacity: 0; }
-        }
-        @keyframes flowUpHot {
-            0% { transform: translateY(10px); opacity: 0; }
-            50% { opacity: 1; }
-            100% { transform: translateY(-50px); opacity: 0; }
-        }
-
-        /* Power Mode */
-        body.mode-power .rack-unit { opacity: 0.3; }
-        body.mode-power .rack-unit[data-power="ups"] { opacity: 1; border-left-color: #22c55e; box-shadow: inset 50px 0 50px -50px #22c55e; }
-        body.mode-power .rack-unit[data-power="cyberpower"] { opacity: 1; border-left-color: #f59e0b; box-shadow: inset 50px 0 50px -50px #f59e0b; }
-
-        .power-legend {
-            display: none;
-            gap: 1rem;
-            margin-top: 1rem;
-            font-size: 0.8rem;
-        }
-        body.mode-power .power-legend { display: flex; }
-        .legend-item { display: flex; align-items: center; gap: 5px;}
-        .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            main { grid-template-columns: 1fr; }
-            .rack-container { max-width: 500px; margin: 0 auto; }
-        }
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <header>
-        <div class="header-title">
-            <h1>AMS Media Rack</h1>
-            <p>Interactive 15U Wall-Mounted Infrastructure Guide</p>
-        </div>
-        <div class="toggles">
-            <button class="toggle-btn" id="btn-airflow">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg>
-                Airflow Mode
-            </button>
-            <button class="toggle-btn" id="btn-power">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-                Power View
-            </button>
-        </div>
+      <div class="header-title">
+        <h1>AMS Media Rack</h1>
+        <p>Interactive Architecture & Routing Visualizer</p>
+      </div>
+      <div class="toggles">
+        <button class="toggle-btn" id="btn-airflow">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"
+            />
+          </svg>
+          Airflow
+        </button>
+        <button class="toggle-btn" id="btn-power">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+          </svg>
+          Global Power
+        </button>
+      </div>
     </header>
 
     <main>
-        <!-- LEFT: RACK VISUALIZER -->
-        <div>
-            <div class="power-legend">
-                <div class="legend-item"><div class="legend-dot" style="background: #22c55e;"></div> UPS Battery Backup</div>
-                <div class="legend-item"><div class="legend-dot" style="background: #f59e0b;"></div> CyberPower Strip</div>
-            </div>
-            <br>
-            <div class="rack-container" id="rack">
-                <div class="cable-indicator left">Data/AV Path</div>
-                <div class="cable-indicator right">Power Path</div>
-                <!-- Units injected via JS -->
-            </div>
+      <div class="rack-wrapper">
+        <div class="rack-legend">
+          <div class="rl-item">
+            <div class="rl-dot" style="background: var(--c-power)"></div>
+            Power
+          </div>
+          <div class="rl-item">
+            <div class="rl-dot" style="background: var(--c-data)"></div>
+            Data
+          </div>
+          <div class="rl-item">
+            <div class="rl-dot" style="background: var(--c-av)"></div>
+            Audio/Video
+          </div>
+          <div class="rl-item">
+            <div class="rl-dot" style="background: var(--c-storage)"></div>
+            Storage
+          </div>
         </div>
 
-        <!-- RIGHT: DETAILS PANEL -->
-        <div class="details-panel" id="info-panel">
-            <div class="empty-state">
-                <div>🎛️</div>
-                <h3>Select a Rack Unit</h3>
-                <p>Click on any unit in the rack diagram to view its connections, power source, and technical details.</p>
-            </div>
+        <div class="rack-container" id="rack">
+          <svg id="svg-layer"></svg>
+          <!-- Units Injected via JS -->
         </div>
+      </div>
+
+      <div class="panel" id="detail-panel">
+        <!-- Initial Empty State -->
+        <div class="empty-state">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <rect x="2" y="2" width="20" height="8" rx="2" ry="2" />
+            <rect x="2" y="14" width="20" height="8" rx="2" ry="2" />
+            <line x1="6" y1="6" x2="6.01" y2="6" />
+            <line x1="6" y1="18" x2="6.01" y2="18" />
+          </svg>
+          <h2>Select a Rack Unit</h2>
+          <p>
+            Click any unit to view interactive signal flows, port mappings, and
+            connections.<br />Click again to deselect.<br /><br /><em
+              >Note: Blanking Panels and Intakes are locked.</em
+            >
+          </p>
+        </div>
+      </div>
     </main>
 
     <script>
-        // --- DATA ARCHITECTURE --- //
-        const rackData = [
-            {
-                unit: 1,
-                name: "UPS Battery Backup",
-                type: "power",
-                powerSource: "Wall Outlet",
-                maintenance: "Heavy unit kept at absolute bottom to protect wall mount.",
-                desc: "Uninterruptible Power Supply. Ensures critical network and storage systems stay online during power outages. Secondary systems do not draw from battery to save uptime.",
-                connections: [
-                    "Powers Unit 3: NAS",
-                    "Powers Unit 7: Network Switch"
-                ]
-            },
-            {
-                unit: 2,
-                name: "CyberPower 10-Switch PDU",
-                type: "power",
-                powerSource: "Surge-Only (UPS)",
-                maintenance: "Do not plug into UPS Battery side.",
-                desc: "Main power distribution unit allowing individual hard-reboots of AV systems without unplugging cables.",
-                connections: [
-                    "Switch 1: Sisters TV / Projector System (U9)",
-                    "Switch 5: Web Presenter (U5)",
-                    "Switch 6: ATEM Video Switcher (U5)",
-                    "Switch 10: Top Rack Exhaust Fans"
-                ]
-            },
-            {
-                unit: 3,
-                name: "Synology RAID NAS",
-                type: "storage",
-                powerSource: "UPS (Battery)",
-                maintenance: "Placed at bottom for coldest intake air. Check temps monthly.",
-                desc: "Network Attached Storage for media archives and IT backups. Requires the coolest air in the rack, hence its placement at Unit 3.",
-                connections: [
-                    "Ethernet to Port 7 on Patch Panel (U8)"
-                ]
-            },
-            {
-                unit: 4,
-                name: "Fresh Air Intake (Empty)",
-                type: "empty",
-                powerSource: "None",
-                maintenance: "Keep clear of dust.",
-                desc: "Deliberately left empty. Acts as the primary cold air intake for the ATEM and Web Presenter above it, driven by the top exhaust fans.",
-                connections: []
-            },
-            {
-                unit: 5,
-                name: "ATEM & Web Presenter",
-                type: "video",
-                powerSource: "CyberPower (Switches 5 & 6)",
-                maintenance: "CRITICAL: Blow dust out weekly. Very prone to overheating.",
-                desc: "The core of the live stream. Receives camera feeds, processes the broadcast, and outputs the main stream as well as an Aux feed for the local TVs.",
-                connections: [
-                    "Inputs: Cams 1-4 from Wall",
-                    "Output (Program): SDI out from ATEM to Web Presenter",
-                    "Output (Aux): SDI out to Sisters TV System (U9)",
-                    "Output (Multiview): HDMI to Media TV Wall (Top Left Port)"
-                ]
-            },
-            {
-                unit: 6,
-                name: "Fresh Air Intake (Empty)",
-                type: "empty",
-                powerSource: "None",
-                maintenance: "Keep clear.",
-                desc: "Deliberately left empty to act as a cold air intake for the dense Network Switch above it.",
-                connections: []
-            },
-            {
-                unit: 7,
-                name: "24-Port Network Switch (PoE)",
-                type: "data",
-                powerSource: "UPS (Battery)",
-                maintenance: "Tolerates heat well.",
-                desc: "Core network switch providing Data and Power over Ethernet (PoE) to cameras, access points, and encoders.",
-                connections: [
-                    "Port 1: Lecture Camera",
-                    "Port 2: Khutbah Camera",
-                    "Port 3: Prayer Camera",
-                    "Port 4: Back Camera",
-                    "Port 5: Web Presenter",
-                    "Port 6: ATEM Video Switcher",
-                    "Port 7: NAS",
-                    "Port 8-16: Media Office Wall Plugs",
-                    "Port 17 - 23: BLANK",
-                    "Port 24: Upstream Internet"
-                ]
-            },
-            {
-                unit: 8,
-                name: "24-Port Patch Panel",
-                type: "data",
-                powerSource: "Passive",
-                maintenance: "Do not bend cables sharply.",
-                desc: "Terminates all wall-runs from the building. Keeps the rack neat by allowing short patch cables to the switch.",
-                connections: [
-                    "Port 1: Lecture Camera",
-                    "Port 2: Khutbah Camera",
-                    "Port 3: Prayer Camera",
-                    "Port 4: Back Camera",
-                    "Port 5: Web Presenter",
-                    "Port 6: ATEM Video Switcher",
-                    "Port 7: NAS",
-                    "Port 8-16 (White): Media Office Wall Plugs",
-                    "Port 17: BLANK",
-                    "Port 18: HDMI Out to Projector Matrix",
-                    "Port 19: Ethernet out to Basement HDMI Receiver",
-                    "Port 20 - 21: Ethernet out to Sisters TV HDMI Receiver",
-                    "Port 22: Access Point?",
-                    "Ports 23-24: Upstream (MDF)"
-                ]
-            },
-            {
-                unit: 9, // and conceptually 10
-                name: "Sisters TVs & Projector System",
-                type: "av",
-                powerSource: "CyberPower (Switch 1)",
-                maintenance: "Uses small 5V adapters. Ensure they are zip-tied neatly.",
-                desc: "Complex routing system taking a clean Aux feed from the ATEM and distributing it to the projectors and the Sisters' section TVs.",
-                connections: [
-                    "Input: SDI from ATEM Aux",
-                    "Input: HDMI in from Media Desk 1 Wall (Right Port)",
-                    "Output: Ethernet to Patch Panel Port 21 (Sisters HDMI Receiver)",
-                    "Output: Ethernet (HDBaseT) to Projector Matrix",
-                ],
-                isComplex: true
-            },
-            {
-                unit: 10,
-                name: "Sisters TV / Projector (Overflow)",
-                type: "av",
-                powerSource: "None",
-                maintenance: "",
-                desc: "Vertical space consumed by the U9 A/V equipment shelves.",
-                connections: [],
-                isHidden: true // Handled by making U9 taller
-            },
-            {
-                unit: 11,
-                name: "Announcement TVs (Future)",
-                type: "future",
-                powerSource: "Power Strip (Ch. 2)",
-                maintenance: "Currently acting as a blanking panel.",
-                desc: "Reserved space for the upcoming Announcement TV system.",
-                connections: []
-            },
-            { unit: 12, name: "Blanking Panel", type: "blank", powerSource: "None", maintenance: "Do not remove.", desc: "Solid metal panel. Prevents top exhaust fans from sucking hot room air through the front, forcing a vacuum that pulls cold air from Units 4 & 6.", connections: [] },
-            { unit: 13, name: "Blanking Panel", type: "blank", powerSource: "None", maintenance: "Do not remove.", desc: "Maintains negative pressure chimney effect.", connections: [] },
-            { unit: 14, name: "Blanking Panel", type: "blank", powerSource: "None", maintenance: "Do not remove.", desc: "Maintains negative pressure chimney effect.", connections: [] },
-            { unit: 15, name: "Blanking Panel", type: "blank", powerSource: "None", maintenance: "Do not remove.", desc: "Maintains negative pressure chimney effect directly under the exhaust fans.", connections: [] }
-        ];
+      // Data Structure
+      const RACK = [
+        {
+          id: 1,
+          type: "pow",
+          name: "UPS Battery Backup",
+          pwr: "none",
+          links: [3, 7],
+          desc: "Maintains critical network/storage uptime during outages. Placed at the absolute bottom for weight safety.",
+        },
+        {
+          id: 2,
+          type: "pow",
+          name: "10-Switch PDU",
+          pwr: "none",
+          links: [5, 9],
+          desc: "Main power strip with physical toggle switches for safe, isolated rebooting of AV gear without unplugging cables.",
+        },
+        {
+          id: 3,
+          type: "sto",
+          name: "Synology RAID NAS",
+          pwr: "ups",
+          links: [1, 7, 8],
+          desc: "Network Attached Storage. Hard drives placed low to intake the absolute coldest air in the room.",
+        },
+        {
+          id: 4,
+          type: "emp",
+          name: "Fresh Air Intake",
+          pwr: "none",
+          links: [],
+          desc: "",
+        },
+        {
+          id: 5,
+          type: "av",
+          name: "ATEM & Web Presenter",
+          pwr: "pdu",
+          links: [2, 7, 8, 9],
+          isATEM: true,
+          desc: "Core broadcast hub. Extremely sensitive to dust and heat. Blow out vents every two weeks.",
+        },
+        {
+          id: 6,
+          type: "emp",
+          name: "Fresh Air Intake",
+          pwr: "none",
+          links: [],
+          desc: "",
+        },
+        {
+          id: 7,
+          type: "dat",
+          name: "24-Port Network Switch (PoE)",
+          pwr: "ups",
+          links: [1, 3, 5, 8],
+          isSwitch: true,
+          desc: "Core data routing and PoE provider.",
+        },
+        {
+          id: 8,
+          type: "dat",
+          name: "24-Port Patch Panel",
+          pwr: "none",
+          links: [5, 7, 9],
+          isPatch: true,
+          desc: "Terminates all permanent wall cables from the building.",
+        },
+        {
+          id: 9,
+          type: "av",
+          name: "Sisters TVs & Projectors",
+          pwr: "pdu",
+          links: [2, 5, 8],
+          isFlow: true,
+          desc: "Receives the ATEM AUX signal, converts it to HDMI, splits it, and transmits it via Ethernet and HDMI Matrices.",
+        },
+        { id: 10, type: "av", name: "A/V Overflow Space", hidden: true },
+        {
+          id: 11,
+          type: "fut",
+          name: "Announcement TVs (Reserved)",
+          pwr: "none",
+          links: [],
+          desc: "Reserved vertical space for the future Announcement TV system.",
+        },
+        { id: 12, type: "blk", name: "Blanking Panel", pwr: "none", links: [] },
+        { id: 13, type: "blk", name: "Blanking Panel", pwr: "none", links: [] },
+        { id: 14, type: "blk", name: "Blanking Panel", pwr: "none", links: [] },
+        { id: 15, type: "blk", name: "Blanking Panel", pwr: "none", links: [] },
+      ];
 
-        // --- RENDER LOGIC --- //
-        const rackContainer = document.getElementById('rack');
-        const infoPanel = document.getElementById('info-panel');
+      const TYPE_LABELS = {
+        pow: "POWER",
+        dat: "DATA",
+        sto: "STORAGE",
+        av: "A/V",
+        fut: "FUTURE",
+      };
 
-        function getTypeColor(type) {
-            switch(type) {
-                case 'power': return 'var(--color-power)';
-                case 'data': return 'var(--color-data)';
-                case 'storage': return 'var(--color-storage)';
-                case 'video':
-                case 'av': return 'var(--color-av)';
-                case 'future': return 'var(--color-future)';
-                default: return '#64748b';
-            }
+      const PORTS = [
+        { p: 1, type: "cam", label: "Lecture Cam (SDI/PoE)" },
+        { p: 2, type: "cam", label: "Khutbah Cam (SDI/PoE)" },
+        { p: 3, type: "cam", label: "Prayer Cam (SDI/PoE)" },
+        { p: 4, type: "cam", label: "Back Cam (SDI/PoE)" },
+        { p: 5, type: "dat", label: "Web Presenter (U5)" },
+        { p: 6, type: "dat", label: "ATEM Switcher (U5)" },
+        { p: 7, type: "dat", label: "Synology NAS (U3)" },
+        { p: 8, type: "dat", label: "Media Desk Wall" },
+        { p: 9, type: "dat", label: "Media Desk Wall" },
+        { p: 10, type: "dat", label: "Media Desk Wall" },
+        { p: 11, type: "dat", label: "Media Desk Wall" },
+        { p: 12, type: "dat", label: "Media Desk Wall" },
+        { p: 13, type: "dat", label: "Media Desk Wall" },
+        { p: 14, type: "dat", label: "Media Desk Wall" },
+        { p: 15, type: "dat", label: "Media Desk Wall" },
+        { p: 16, type: "dat", label: "Media Desk Wall" },
+        { p: 17, type: "none", label: "Empty / Blank" },
+        { p: 18, type: "av", label: "Desk Wall Plug (HDMI -> U9 Matrix)" },
+        { p: 19, type: "av", label: "Basement Feed (Cat6 Out)" },
+        { p: 20, type: "av", label: "Sisters TV Backup (Cat6)" },
+        { p: 21, type: "av", label: "Sisters TV Main (Cat6 from U9)" },
+        { p: 22, type: "dat", label: "Wireless Access Point" },
+        { p: 23, type: "up", label: "MDF Upstream 1" },
+        { p: 24, type: "up", label: "MDF Upstream 2 / Internet" },
+      ];
+
+      let activeUnitId = null;
+
+      const rackDOM = document.getElementById("rack");
+      const svgLayer = document.getElementById("svg-layer");
+      const panelDOM = document.getElementById("detail-panel");
+      const emptyStateHTML = panelDOM.innerHTML;
+
+      // Render Rack DOM
+      RACK.forEach((unit) => {
+        if (unit.hidden) return;
+        const el = document.createElement("div");
+        el.className = `rack-unit u-${unit.type} ${["blk", "emp"].includes(unit.type) ? "" : "clickable"}`;
+        el.dataset.id = unit.id;
+        el.dataset.pwr = unit.pwr;
+
+        let led = ["dat", "av", "sto"].includes(unit.type)
+          ? `<div class="status-led"></div>`
+          : "";
+        let air = "";
+        if (unit.type === "emp")
+          air = `<div class="air-particle p-in" style="left:20%"></div><div class="air-particle p-in" style="left:50%"></div><div class="air-particle p-in" style="left:80%"></div>`;
+        if (unit.id === 15)
+          air = `<div class="air-particle p-out" style="left:30%"></div><div class="air-particle p-out" style="left:70%"></div>`;
+
+        el.innerHTML = `<div class="unit-num">U${unit.id}</div><div class="unit-name">${unit.name}</div>${led}${air}`;
+
+        if (!["blk", "emp"].includes(unit.type)) {
+          el.onclick = () => selectUnit(unit);
+        }
+        rackDOM.appendChild(el);
+      });
+
+      function selectUnit(data) {
+        // Turn off Global modes
+        document.body.classList.remove("mode-power", "mode-airflow");
+        document
+          .querySelectorAll(".toggle-btn")
+          .forEach((btn) => btn.classList.remove("active"));
+
+        // Toggle Deselection
+        if (activeUnitId === data.id) {
+          activeUnitId = null;
+          rackDOM.classList.remove("has-selection");
+          document
+            .querySelectorAll(".rack-unit")
+            .forEach((el) =>
+              el.classList.remove("selected", "related-highlight"),
+            );
+          svgLayer.innerHTML = "";
+          panelDOM.innerHTML = emptyStateHTML;
+          return;
         }
 
-        function getPowerTag(unit) {
-            if ([1, 3, 7].includes(unit)) return 'ups';
-            if ([2, 5, 9].includes(unit)) return 'cyberpower';
-            return 'none';
-        }
+        activeUnitId = data.id;
+        rackDOM.classList.add("has-selection");
+        document.querySelectorAll(".rack-unit").forEach((el) => {
+          el.classList.remove("selected", "related-highlight");
+          if (el.dataset.id == data.id) el.classList.add("selected");
+          else if (data.links.includes(parseInt(el.dataset.id)))
+            el.classList.add("related-highlight");
+        });
 
-        function renderRack() {
-            rackData.forEach(item => {
-                if(item.isHidden) return;
+        // Populate Panel
+        const typeColor = {
+          pow: "var(--c-power)",
+          dat: "var(--c-data)",
+          sto: "var(--c-storage)",
+          av: "var(--c-av)",
+          fut: "var(--c-uplink)",
+        }[data.type];
+        const badgeText = TYPE_LABELS[data.type] || data.type;
 
-                const div = document.createElement('div');
-                div.className = `rack-unit unit-${item.type}`;
-                div.setAttribute('data-id', item.unit);
-                div.setAttribute('data-power', getPowerTag(item.unit));
-                
-                let ledHtml = ['data', 'video', 'storage', 'av', 'power'].includes(item.type) ? `<div class="led" style="margin-left: auto;"></div>` : '';
+        let contentHTML = `
+                <div class="header-row">
+                    <div class="title-block">
+                        <h2>U${data.id}: ${data.name}</h2>
+                        <span class="badge" style="background: ${typeColor}22; color: ${typeColor}; border: 1px solid ${typeColor}">${badgeText}</span>
+                    </div>
+                </div>
+                <p style="color: var(--text-muted); line-height: 1.6;">${data.desc}</p>
+            `;
 
-                div.innerHTML = `
-                    <div class="unit-number">U${item.unit}</div>
-                    <div class="unit-label">${item.name}</div>
-                    ${ledHtml}
-                `;
+        if (data.isATEM) contentHTML += renderATEMFlow();
+        if (data.isSwitch || data.isPatch)
+          contentHTML += renderPortView(data.isPatch);
+        if (data.isFlow) contentHTML += renderAVFlow();
 
-                // Add Airflow particles for specific units
-                if(item.type === 'empty') {
-                    div.innerHTML += `
-                        <div class="airflow-particle particle-intake" style="left: 20%;"></div>
-                        <div class="airflow-particle particle-intake" style="left: 50%;"></div>
-                        <div class="airflow-particle particle-intake" style="left: 80%;"></div>
-                    `;
-                }
-                if(item.unit === 15) {
-                    div.innerHTML += `
-                        <div class="airflow-particle particle-exhaust" style="left: 30%;"></div>
-                        <div class="airflow-particle particle-exhaust" style="left: 70%;"></div>
-                    `;
-                }
+        panelDOM.innerHTML = contentHTML;
+        drawSelectionLines(data);
+      }
 
-                div.addEventListener('click', () => selectUnit(item.unit));
-                rackContainer.appendChild(div);
+      // VISUALIZER RENDERERS
+      function renderATEMFlow() {
+        return `
+                <h4 style="color: #fff; margin-bottom: 0.5rem;">Hardware & Signal Routing</h4>
+                <div class="sys-diagram">
+                    
+                    <!-- INPUTS COLUMN -->
+                    <div class="sys-col">
+                        <div class="sys-group">
+                            <div class="sys-lbl">SDI CAMERAS</div>
+                            <div class="sys-port yel">Cam 1 (Port 5)</div>
+                            <div class="sys-port yel">Cam 2 (Port 6)</div>
+                            <div class="sys-port yel">Cam 3 (Port 7)</div>
+                            <div class="sys-port yel">Cam 4 (Port 8)</div>
+                        </div>
+                        <div class="sys-group">
+                            <div class="sys-lbl">XLR AUDIO IN</div>
+                            <div class="sys-port pur">
+                                <span>Mixer Aux 4</span>
+                                <div class="y-split"><span>L</span><span>R</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ATEM BLOCK -->
+                    <div class="sys-hw atem">
+                        <h3>ATEM Switcher</h3>
+                        <div class="hw-out-ports">
+                            <div class="sys-port out">Multiview (HDMI) <span>➔ Media TV</span></div>
+                            <div class="sys-port out">AUX (SDI) <span>➔ Unit 9</span></div>
+                        </div>
+                    </div>
+
+                    <div class="sys-arrow-box">
+                        <small>PRGRM (SDI)</small>
+                        →
+                    </div>
+
+                    <!-- WP BLOCK -->
+                    <div class="sys-hw wp">
+                        <h3>Web Presenter</h3>
+                        <div class="hw-out-ports">
+                            <div class="sys-port out blu">USB-C Webcam <span>➔ Media PC</span></div>
+                        </div>
+                    </div>
+
+                </div>
+            `;
+      }
+
+      function renderPortView(isPatch) {
+        let title = isPatch
+          ? "Passive Wall Terminations"
+          : "Active Network Connections";
+        return `
+                <div class="port-visualizer">
+                    <h4 style="margin-bottom: 1rem; color: #fff;">${title}</h4>
+                    <div class="port-grid">
+                        ${PORTS.slice(0, 12)
+                          .map(
+                            (p) =>
+                              `<div class="port pt-${p.type}" data-tip="Port ${p.p}: ${p.label}">${p.p}</div>`,
+                          )
+                          .join("")}
+                    </div>
+                    <div class="port-grid">
+                        ${PORTS.slice(12, 24)
+                          .map(
+                            (p) =>
+                              `<div class="port pt-${p.type}" data-tip="Port ${p.p}: ${p.label}">${p.p}</div>`,
+                          )
+                          .join("")}
+                    </div>
+                    <div class="port-legend">
+                        <div class="leg-item"><div class="leg-dot" style="background:var(--c-cam)"></div> Cameras</div>
+                        <div class="leg-item"><div class="leg-dot" style="background:var(--c-data)"></div> Data/Web</div>
+                        <div class="leg-item"><div class="leg-dot" style="background:var(--c-av)"></div> A/V Signal</div>
+                        <div class="leg-item"><div class="leg-dot" style="background:var(--c-uplink)"></div> Internet</div>
+                    </div>
+                </div>
+            `;
+      }
+
+      function renderAVFlow() {
+        return `
+                <div class="av-flow">
+                    <h4 style="margin-bottom: 2rem; color: #fff; text-align:center;">Signal Flow: Sisters TVs & Projectors</h4>
+                    <div class="flow-row"><div class="f-node" style="border-top: 3px solid var(--c-data)"><strong>ATEM AUX Out (U5)</strong><small>Source Signal</small></div></div>
+                    <div class="f-line-v"></div>
+                    <div class="flow-row"><div class="f-node" style="border-left: 3px solid var(--c-power)"><div class="f-badge">5V USB-C</div><strong>BM Converter</strong><small>SDI to HDMI</small></div></div>
+                    <div class="f-line-v"></div>
+                    <div class="flow-row"><div class="f-node" style="border-left: 3px solid #eab308"><strong>HDMI Splitter</strong><small>Duplicates Output</small></div></div>
+                    
+                    <div class="f-fork"><div class="f-fork-h"></div><div class="f-fork-v left"></div><div class="f-fork-v right"></div></div>
+                    
+                    <div class="flow-row" style="gap: 1rem;">
+                        <div style="display:flex; flex-direction:column; align-items:center; flex:1; min-width: 180px;">
+                            <div class="f-node" style="margin-bottom: 1rem;"><strong>Ethernet Receiver</strong><small>HDMI to Ethernet</small></div>
+                            <div class="f-line-v" style="height: 1.5rem;"></div>
+                            <div class="f-node" style="border-bottom: 3px solid var(--c-av); background:#1f2937;"><strong>Sisters TVs</strong><small>Via Patch Port 21</small></div>
+                        </div>
+                        <div style="display:flex; flex-direction:column; align-items:center; flex:1; min-width: 180px;">
+                            <div style="display:flex; gap:10px; margin-bottom:1rem; align-items:center;">
+                                <div class="f-node" style="width:auto; min-width:80px; background:#1f2937; padding:0.5rem;"><small>Wall Plug<br>(P18)</small></div>
+                                <div style="color:var(--border-color);">→</div>
+                                <div class="f-node"><strong>4-Way Switch</strong><small>Inputs: ATEM & Wall</small></div>
+                            </div>
+                            <div class="f-line-v" style="height: 1.5rem;"></div>
+                            <div class="f-node" style="border-bottom: 3px solid var(--c-av); background:#1f2937;"><strong>Projector Matrix</strong><small>Main Hall Display</small></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+      }
+
+      // --- DYNAMIC SVG DRAWING --- //
+      function getCenterY(el, containerRect) {
+        return (
+          el.getBoundingClientRect().top -
+          containerRect.top +
+          el.offsetHeight / 2
+        );
+      }
+
+      function drawSelectionLines(data) {
+        svgLayer.innerHTML = "";
+        const units = Array.from(document.querySelectorAll(".rack-unit"));
+        const getEl = (id) => units.find((u) => u.dataset.id == id);
+        const rackRect = rackDOM.getBoundingClientRect();
+        let svgHTML = "";
+        const selfEl = getEl(data.id);
+        if (!selfEl) return;
+        const selfY = getCenterY(selfEl, rackRect);
+
+        // DATA/AV LINES (Left Side - Blue) - ONLY if not a Power Unit
+        if (data.type !== "pow") {
+          const dataLinkIds = data.links.filter((id) => id !== 1 && id !== 2); // Exclude UPS/PDU
+          if (dataLinkIds.length > 0) {
+            const linkEls = dataLinkIds.map((id) => getEl(id)).filter(Boolean);
+            const allY = [
+              selfY,
+              ...linkEls.map((el) => getCenterY(el, rackRect)),
+            ];
+            const minY = Math.min(...allY);
+            const maxY = Math.max(...allY);
+            const busX = 14;
+
+            svgHTML += `<path d="M ${busX} ${minY} L ${busX} ${maxY}" stroke="var(--c-data)" stroke-width="3" fill="none" opacity="0.8"/>`;
+            [selfEl, ...linkEls].forEach((el) => {
+              const y = getCenterY(el, rackRect);
+              svgHTML += `<path d="M ${busX} ${y} L ${busX + 16} ${y}" stroke="var(--c-data)" stroke-width="3" fill="none" opacity="0.8"/>`;
+              svgHTML += `<circle cx="${busX + 16}" cy="${y}" r="3" fill="var(--c-data)" />`;
             });
+          }
         }
 
-        function selectUnit(id) {
-            document.querySelectorAll('.rack-unit').forEach(u => u.classList.remove('selected'));
-            document.querySelector(`.rack-unit[data-id="${id}"]`).classList.add('selected');
-
-            const item = rackData.find(d => d.unit === id);
-            
-            let connectionsHtml = item.connections.length ? 
-                `<div class="meta-item">
-                    <label>Connections</label>
-                    ${item.connections.map(c => `<p>• ${c}</p>`).join('')}
-                </div>` : '';
-
-            let complexDiagramHtml = item.isComplex ? renderComplexDiagram() : '';
-
-            infoPanel.innerHTML = `
-                <div class="info-header">
-                    <div>
-                        <h2 class="info-title">U${item.unit}: ${item.name}</h2>
-                        <span style="color: ${getTypeColor(item.type)}; font-family: monospace; font-size: 0.85rem; margin-top: 5px; display: block;">
-                            <span class="info-type-badge" style="background: ${getTypeColor(item.type)}22; border: 1px solid ${getTypeColor(item.type)}">${item.type}</span>
-                        </span>
-                    </div>
-                </div>
-                
-                <p class="info-desc">${item.desc}</p>
-                
-                <div class="meta-grid">
-                    <div class="meta-item">
-                        <label>Power Routing</label>
-                        <p>${item.powerSource}</p>
-                    </div>
-                    <div class="meta-item">
-                        <label>Maintenance Note</label>
-                        <p style="color: #fbbf24">${item.maintenance || 'Standard cleaning.'}</p>
-                    </div>
-                    ${connectionsHtml}
-                </div>
-                
-                ${complexDiagramHtml}
-            `;
+        // POWER LINES (Right Side)
+        let pSrc = null;
+        let pTgts = [];
+        let pCol = "";
+        if (data.id === 1) {
+          pSrc = selfEl;
+          pTgts = units.filter((u) => u.dataset.pwr === "ups");
+          pCol = "var(--c-ups)";
+        } else if (data.id === 2) {
+          pSrc = selfEl;
+          pTgts = units.filter((u) => u.dataset.pwr === "pdu");
+          pCol = "var(--c-power)";
+        } else if (data.pwr === "ups") {
+          pSrc = getEl(1);
+          pTgts = [selfEl];
+          pCol = "var(--c-ups)";
+        } else if (data.pwr === "pdu") {
+          pSrc = getEl(2);
+          pTgts = [selfEl];
+          pCol = "var(--c-power)";
         }
 
-        function renderComplexDiagram() {
-            return `
-            <div class="complex-system-diagram">
-                <div class="diagram-title">System Flow Diagram</div>
-                <div class="flow-grid">
-                    <div class="node source">
-                        ATEM Video Switcher (U5)
-                        <small>Output: Aux Feed</small>
-                    </div>
-                    <div class="arrow">↓ <span>SDI Cable</span></div>
-                    
-                    <div class="node converter">
-                        Blackmagic Converter
-                        <small>Converts SDI to HDMI</small>
-                    </div>
-                    <div class="arrow">↓ <span>HDMI</span></div>
-                    
-                    <div class="node splitter">
-                        HDMI Splitter
-                        <small>Splits to Sisters & Projectors</small>
-                    </div>
-                    
-                    <div class="split-path">
-                        <!-- Path A: Sisters -->
-                        <div class="split-branch">
-                            <div class="arrow">↓ <span>Cat6 (Patch U8, P21)</span></div>
-                            <div class="node converter">
-                                Extender Receiver
-                                <small>Through wall to Sisters Side</small>
-                            </div>
-                            <div class="arrow">↓ <span>HDMI</span></div>
-                            <div class="node end">Sisters TVs</div>
-                        </div>
+        if (pSrc && pTgts.length > 0) {
+          const allY = [
+            getCenterY(pSrc, rackRect),
+            ...pTgts.map((el) => getCenterY(el, rackRect)),
+          ];
+          const minY = Math.min(...allY);
+          const maxY = Math.max(...allY);
+          const busX = rackRect.width - 14;
 
-                        <!-- Path B: Projectors -->
-                        <div class="split-branch">
-                            <div class="arrow">↓ <span>HDMI</span></div>
-                            <div class="node splitter" style="border-left-color: #ec4899">
-                                HDMI Switch
-                                <small>Input 1: ATEM (AUX)<br>Input 2: Desk 1 Wall Plug (Right) </small>
-                            </div>
-                            <div class="arrow">↓ <span>HDMI</span></div>
-                            <div class="node end">Main Projector Matrix</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            `;
+          svgHTML += `<path d="M ${busX} ${minY} L ${busX} ${maxY}" stroke="${pCol}" stroke-dasharray="4" stroke-width="3" fill="none" opacity="0.8"/>`;
+          [pSrc, ...pTgts].forEach((el) => {
+            const y = getCenterY(el, rackRect);
+            svgHTML += `<path d="M ${busX} ${y} L ${busX - 16} ${y}" stroke="${pCol}" stroke-width="3" fill="none" opacity="0.8"/>`;
+            svgHTML += `<circle cx="${busX - 16}" cy="${y}" r="3" fill="${pCol}" />`;
+          });
         }
 
-        // --- INTERACTIVITY TOGGLES --- //
-        const btnAirflow = document.getElementById('btn-airflow');
-        const btnPower = document.getElementById('btn-power');
+        svgLayer.innerHTML = svgHTML;
+      }
 
-        btnAirflow.addEventListener('click', () => {
-            document.body.classList.toggle('mode-airflow');
-            btnAirflow.classList.toggle('active');
-            if(document.body.classList.contains('mode-airflow')) {
-                document.body.classList.remove('mode-power');
-                btnPower.classList.remove('active');
-            }
-        });
+      function drawGlobalPowerLines() {
+        svgLayer.innerHTML = "";
+        const units = Array.from(document.querySelectorAll(".rack-unit"));
+        const rackRect = rackDOM.getBoundingClientRect();
+        let svgHTML = "";
 
-        btnPower.addEventListener('click', () => {
-            document.body.classList.toggle('mode-power');
-            btnPower.classList.toggle('active');
-            if(document.body.classList.contains('mode-power')) {
-                document.body.classList.remove('mode-airflow');
-                btnAirflow.classList.remove('active');
-            }
-        });
+        const u1 = units.find((u) => u.dataset.id === "1");
+        const upsTargets = units.filter((u) => u.dataset.pwr === "ups");
+        if (u1 && upsTargets.length > 0) {
+          const startY = getCenterY(u1, rackRect);
+          const endY = getCenterY(upsTargets[upsTargets.length - 1], rackRect);
+          const busX = rackRect.width - 25;
+          svgHTML += `<path d="M ${busX} ${startY} L ${busX} ${endY}" stroke="var(--c-ups)" stroke-width="3" fill="none" />`;
+          svgHTML += `<path d="M ${busX} ${startY} L ${busX - 25} ${startY}" stroke="var(--c-ups)" stroke-width="3" fill="none" />`;
+          upsTargets.forEach((tgt) => {
+            svgHTML += `<path d="M ${busX} ${getCenterY(tgt, rackRect)} L ${busX - 25} ${getCenterY(tgt, rackRect)}" stroke="var(--c-ups)" stroke-width="3" fill="none" />`;
+          });
+        }
 
-        // Initialize
-        renderRack();
+        const u2 = units.find((u) => u.dataset.id === "2");
+        const pduTargets = units.filter((u) => u.dataset.pwr === "pdu");
+        if (u2 && pduTargets.length > 0) {
+          const startY = getCenterY(u2, rackRect);
+          const endY = getCenterY(pduTargets[pduTargets.length - 1], rackRect);
+          const busX = rackRect.width - 15;
+          svgHTML += `<path d="M ${busX} ${startY} L ${busX} ${endY}" stroke="var(--c-power)" stroke-width="3" fill="none" />`;
+          svgHTML += `<path d="M ${busX} ${startY} L ${busX - 35} ${startY}" stroke="var(--c-power)" stroke-width="3" fill="none" />`;
+          pduTargets.forEach((tgt) => {
+            svgHTML += `<path d="M ${busX} ${getCenterY(tgt, rackRect)} L ${busX - 35} ${getCenterY(tgt, rackRect)}" stroke="var(--c-power)" stroke-width="3" fill="none" />`;
+          });
+        }
+        svgLayer.innerHTML = svgHTML;
+      }
+
+      // Toggles
+      document.getElementById("btn-airflow").onclick = function () {
+        activeUnitId = null;
+        rackDOM.classList.remove("has-selection");
+        document
+          .querySelectorAll(".rack-unit")
+          .forEach((el) =>
+            el.classList.remove("selected", "related-highlight"),
+          );
+        panelDOM.innerHTML = emptyStateHTML;
+        svgLayer.innerHTML = "";
+
+        document.body.classList.toggle("mode-airflow");
+        this.classList.toggle("active");
+        if (document.body.classList.contains("mode-airflow")) {
+          document.body.classList.remove("mode-power");
+          document.getElementById("btn-power").classList.remove("active");
+        }
+      };
+
+      document.getElementById("btn-power").onclick = function () {
+        activeUnitId = null;
+        rackDOM.classList.remove("has-selection");
+        document
+          .querySelectorAll(".rack-unit")
+          .forEach((el) =>
+            el.classList.remove("selected", "related-highlight"),
+          );
+        panelDOM.innerHTML = emptyStateHTML;
+        svgLayer.innerHTML = "";
+
+        document.body.classList.toggle("mode-power");
+        this.classList.toggle("active");
+
+        if (document.body.classList.contains("mode-power")) {
+          document.body.classList.remove("mode-airflow");
+          document.getElementById("btn-airflow").classList.remove("active");
+          setTimeout(drawGlobalPowerLines, 50);
+        }
+      };
+
+      window.addEventListener("resize", () => {
+        if (document.body.classList.contains("mode-power")) {
+          drawGlobalPowerLines();
+        } else if (activeUnitId) {
+          const activeData = RACK.find((u) => u.id === activeUnitId);
+          drawSelectionLines(activeData);
+        }
+      });
     </script>
-</body>
+  </body>
 </html>
