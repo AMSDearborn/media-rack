@@ -3,37 +3,37 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AMS Media Rack | Mission Control</title>
+
     <!-- SVG Rack Favicon -->
     <link
       rel="icon"
-      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect x=%2210%22 y=%2210%22 width=%2280%22 height=%2280%22 rx=%228%22 fill=%22%23111827%22 stroke=%22%233b82f6%22 stroke-width=%226%22/><line x1=%2220%22 y1=%2230%22 x2=%2280%22 y2=%2230%22 stroke=%22%23374151%22 stroke-width=%228%22/><line x1=%2220%22 y1=%2250%22 x2=%2280%22 y2=%2250%22 stroke=%22%23374151%22 stroke-width=%228%22/><line x1=%2220%22 y1=%2270%22 x2=%2280%22 y2=%2270%22 stroke=%22%23374151%22 stroke-width=%228%22/><circle cx=%2230%22 cy=%2250%22 r=%224%22 fill=%22%2322c55e%22/></svg>"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect x=%2210%22 y=%2210%22 width=%2280%22 height=%2280%22 rx=%228%22 fill=%22%23020617%22 stroke=%22%2306b6d4%22 stroke-width=%224%22/><line x1=%2220%22 y1=%2230%22 x2=%2280%22 y2=%2230%22 stroke=%22%23334155%22 stroke-width=%228%22/><line x1=%2220%22 y1=%2250%22 x2=%2280%22 y2=%2250%22 stroke=%22%23334155%22 stroke-width=%228%22/><line x1=%2220%22 y1=%2270%22 x2=%2280%22 y2=%2270%22 stroke=%22%23334155%22 stroke-width=%228%22/><circle cx=%2230%22 cy=%2250%22 r=%224%22 fill=%22%2322c55e%22/></svg>"
     />
 
-    <title>AMS Media Rack</title>
-
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&display=swap");
 
       :root {
-        --bg-dark: #0a0f18;
-        --bg-panel: #111827;
-        --bg-card: #1f2937;
-        --text-main: #f3f4f6;
-        --text-muted: #9ca3af;
-        --border-color: #374151;
+        --bg-deep: #020617;
+        --bg-glass: rgba(15, 23, 42, 0.85);
+        --bg-hardware: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
 
-        /* Category Colors */
-        --c-power: #f59e0b;
-        --c-ups: #22c55e;
-        --c-data: #3b82f6;
-        --c-storage: #10b981;
-        --c-av: #8b5cf6;
-        --c-cam: #eab308;
-        --c-uplink: #2dd4bf;
-        --c-audio: #d946ef;
+        --text-main: #f8fafc;
+        --text-muted: #64748b;
 
-        --c-airflow-cool: #38bdf8;
-        --c-airflow-hot: #ef4444;
+        --glow-pow: #f59e0b; /* Orange */
+        --glow-ups: #10b981; /* Emerald */
+        --glow-srg: #eab308; /* Yellow */
+        --glow-dat: #0ea5e9; /* Cyan */
+        --glow-av: #8b5cf6; /* Violet */
+        --glow-cam: #eab308; /* Yellow */
+        --glow-aud: #ec4899; /* Magenta */
+
+        --border-subtle: rgba(148, 163, 184, 0.15);
+        --font-ui: "Inter", sans-serif;
+        --font-head: "Space Grotesk", sans-serif;
+        --font-mono: "JetBrains Mono", monospace;
       }
 
       * {
@@ -41,102 +41,113 @@
         margin: 0;
         padding: 0;
       }
+
       body {
-        font-family: "Inter", sans-serif;
-        background-color: var(--bg-dark);
+        font-family: var(--font-ui);
+        background-color: var(--bg-deep);
         color: var(--text-main);
+        min-height: 100vh;
         display: flex;
         flex-direction: column;
-        min-height: 100vh;
+        overflow-x: hidden;
       }
 
       /* HEADER */
       header {
-        background-color: var(--bg-panel);
-        padding: 1.25rem 2rem;
-        border-bottom: 1px solid var(--border-color);
         display: flex;
         justify-content: space-between;
         align-items: center;
-        z-index: 50;
         flex-wrap: wrap;
         gap: 1rem;
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid var(--border-subtle);
+        background: rgba(2, 6, 23, 0.95);
+        position: sticky;
+        top: 0;
+        z-index: 100;
       }
-      .header-title h1 {
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      .brand h1 {
+        font-family: var(--font-head);
+        font-weight: 700;
         font-size: 1.5rem;
-        font-weight: 800;
-        background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-        background-clip: text;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
       }
-      .header-title p {
-        color: var(--text-muted);
-        font-size: 0.85rem;
-        font-family: "JetBrains Mono", monospace;
-        margin-top: 4px;
+      .brand span {
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        color: var(--glow-dat);
+        padding: 4px 8px;
+        border: 1px solid var(--glow-dat);
+        border-radius: 4px;
       }
 
-      /* VIEW MODES */
-      .toggles {
+      .controls {
         display: flex;
         gap: 0.5rem;
-        background: var(--bg-card);
-        padding: 0.5rem;
-        border-radius: 8px;
-        border: 1px solid var(--border-color);
         flex-wrap: wrap;
       }
-      .toggle-btn {
-        background: transparent;
-        border: none;
-        color: var(--text-muted);
-        padding: 0.5rem 0.75rem;
+      .cyber-btn {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border-subtle);
+        color: var(--text-main);
+        padding: 0.6rem 1rem;
         border-radius: 6px;
-        cursor: pointer;
-        font-weight: 600;
+        font-family: var(--font-head);
+        font-weight: 500;
         font-size: 0.8rem;
+        cursor: pointer;
         transition: 0.2s;
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 8px;
+        text-transform: uppercase;
       }
-      .toggle-btn:hover {
-        color: var(--text-main);
-        background: rgba(255, 255, 255, 0.05);
+      .cyber-btn:hover {
+        background: rgba(255, 255, 255, 0.08);
       }
-      .toggle-btn.active {
-        background: var(--bg-panel);
-        color: #fff;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        border: 1px solid var(--border-color);
+      .cyber-btn.active-air {
+        border-color: #38bdf8;
+        box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+        color: #38bdf8;
+      }
+      .cyber-btn.active-pwr {
+        border-color: var(--glow-pow);
+        box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+        color: var(--glow-pow);
       }
 
-      /* MAIN LAYOUT */
+      /* MAIN STAGE */
       main {
         display: grid;
-        grid-template-columns: 360px 1fr;
+        grid-template-columns: 400px 1fr;
         gap: 2rem;
         padding: 2rem;
-        flex: 1;
-        max-width: 1600px;
+        max-width: 1800px;
         margin: 0 auto;
         width: 100%;
       }
 
-      /* LEFT RACK */
+      /* --- THE RACK --- */
       .rack-wrapper {
         position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
       }
+
       .rack-legend {
         display: flex;
-        gap: 10px;
-        margin-bottom: 12px;
-        justify-content: center;
+        gap: 15px;
+        margin-bottom: 1rem;
+        font-family: var(--font-mono);
         font-size: 0.65rem;
-        font-weight: 600;
         color: var(--text-muted);
         flex-wrap: wrap;
+        justify-content: center;
       }
       .rl-item {
         display: flex;
@@ -149,39 +160,48 @@
         border-radius: 2px;
       }
 
-      .rack-container {
+      .rack-enclosure {
+        width: 100%;
+        max-width: 400px;
         background: #000;
-        border: 4px solid #1f2937;
-        border-radius: 6px;
-        padding: 0.5rem;
+        border-radius: 8px;
+        padding: 12px 6px;
         display: flex;
         flex-direction: column-reverse;
         gap: 4px;
+        box-shadow:
+          0 20px 50px rgba(0, 0, 0, 0.8),
+          inset 0 0 0 4px #1e293b;
         position: relative;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        z-index: 10;
+        border: 1px solid #334155;
       }
-      .rack-container::before,
-      .rack-container::after {
+      .rack-enclosure::before,
+      .rack-enclosure::after {
         content: "";
         position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 20px;
-        background-image: radial-gradient(#4b5563 2px, transparent 2.5px);
-        background-size: 10px 14px;
-        z-index: 1;
+        top: 12px;
+        bottom: 12px;
+        width: 14px;
+        background: linear-gradient(
+          90deg,
+          #334155 0%,
+          #1e293b 50%,
+          #334155 100%
+        );
+        border-radius: 2px;
       }
-      .rack-container::before {
-        left: 0;
-        border-right: 2px solid #111827;
+      .rack-enclosure::before {
+        left: 8px;
+        border-right: 1px solid #0f172a;
       }
-      .rack-container::after {
-        right: 0;
-        border-left: 2px solid #111827;
+      .rack-enclosure::after {
+        right: 8px;
+        border-left: 1px solid #0f172a;
       }
 
-      /* SVG Overlays */
-      #svg-layer {
+      /* RACK SVG LINES */
+      #rack-lines-layer {
         position: absolute;
         top: 0;
         left: 0;
@@ -189,102 +209,136 @@
         height: 100%;
         pointer-events: none;
         z-index: 15;
-        transition: opacity 0.3s ease;
+      }
+      .beam {
+        animation: flow 1s linear infinite;
+        stroke-dasharray: 8;
+      }
+      .surge-beam {
+        stroke-dasharray: 4 6;
+        animation: flow 2s linear infinite;
+      }
+      @keyframes flow {
+        to {
+          stroke-dashoffset: -20;
+        }
       }
 
       .rack-unit {
-        height: 40px;
-        border-radius: 4px;
-        display: flex;
-        align-items: center;
-        padding: 0 1rem;
+        height: 44px;
+        margin: 0 28px;
+        border-radius: 2px;
+        background: var(--bg-hardware);
+        border: 1px solid #334155;
+        border-bottom-color: #0f172a;
         position: relative;
         z-index: 2;
+        display: flex;
+        align-items: center;
+        padding: 0 12px;
         transition: all 0.2s ease;
-        margin: 0 15px;
-        background: var(--bg-panel);
-        border: 1px solid var(--border-color);
-      }
-      .clickable {
         cursor: pointer;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
       }
-      .clickable:hover {
-        transform: scale(1.02);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-        z-index: 20;
-        border-color: var(--text-muted);
+      .rack-unit[data-id="9"] {
+        height: 92px;
+        align-items: flex-start;
+        padding-top: 12px;
       }
 
-      /* Highlighting Logic */
-      .rack-container.has-selection
-        .rack-unit:not(.selected):not(.related-highlight) {
-        opacity: 0.25;
-        filter: grayscale(80%);
-      }
-      .rack-unit.selected {
-        border-color: #fff;
-        background: var(--bg-card);
+      .rack-unit:not(.u-blk):not(.u-emp):hover {
+        transform: scale(1.02);
+        filter: brightness(1.2);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
         z-index: 20;
       }
+
+      /* Highlighting Logic - NO DIMMING OF OTHERS */
+      .rack-unit.selected {
+        border: 1px solid #fff;
+        z-index: 20;
+        box-shadow: 0 0 25px rgba(255, 255, 255, 0.25);
+        filter: brightness(1.2);
+      }
       .rack-unit.related-highlight {
-        box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-        border-color: rgba(255, 255, 255, 0.4);
+        border-color: rgba(255, 255, 255, 0.3);
         z-index: 15;
       }
 
-      .unit-num {
-        font-family: "JetBrains Mono", monospace;
-        font-size: 0.75rem;
-        color: var(--text-muted);
-        width: 35px;
-        font-weight: bold;
+      /* Power Off State Logic */
+      .power-off {
+        filter: grayscale(1) brightness(0.4) !important;
+        transition: 0.4s ease;
+        pointer-events: none;
       }
-      .unit-name {
+      .power-off .hw-led {
+        background: #475569 !important;
+        box-shadow: none !important;
+        animation: none !important;
+      }
+      .power-off .thermal {
+        display: none !important;
+        animation: none !important;
+      }
+
+      .u-id {
+        font-family: var(--font-mono);
+        font-size: 0.6rem;
+        color: var(--text-muted);
+        width: 26px;
+        opacity: 0.6;
+      }
+      .u-name {
+        font-size: 0.8rem;
         font-weight: 600;
-        font-size: 0.85rem;
+        font-family: var(--font-head);
+        z-index: 2;
         flex: 1;
-        display: flex;
-        align-items: center;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
       }
 
       .u-pow {
-        border-left: 4px solid var(--c-power);
+        border-left: 3px solid var(--glow-pow);
+      }
+      .u-ups {
+        border-left: 3px solid var(--glow-ups);
       }
       .u-dat {
-        border-left: 4px solid var(--c-data);
-      }
-      .u-sto {
-        border-left: 4px solid var(--c-storage);
+        border-left: 3px solid var(--glow-dat);
       }
       .u-av {
-        border-left: 4px solid var(--c-av);
+        border-left: 3px solid var(--glow-av);
       }
       .u-blk {
-        background: #1f2937;
-        border: 1px solid #111827;
-        color: #4b5563;
+        background: #111827;
+        border-color: #1e293b;
+        cursor: default;
       }
       .u-emp {
-        background: transparent;
-        border: 1px dashed #374151;
-        color: #4b5563;
-      }
-      .rack-unit[data-id="9"] {
-        height: 84px;
-        align-items: flex-start;
-        padding-top: 10px;
+        background: repeating-linear-gradient(
+          90deg,
+          transparent,
+          transparent 2px,
+          rgba(255, 255, 255, 0.03) 2px,
+          rgba(255, 255, 255, 0.03) 4px
+        );
+        border: 1px dashed #334155;
+        cursor: default;
       }
 
-      .status-led {
-        min-width: 6px;
-        height: 6px;
+      /* HARDWARE LEDS & MINI SWITCHES */
+      .hw-led {
+        width: 5px;
+        height: 5px;
         border-radius: 50%;
+        background: #475569;
+        transition: 0.3s;
+      }
+      .hw-led.active {
         background: #22c55e;
         box-shadow: 0 0 8px #22c55e;
-        margin-left: auto;
         animation: blink 2s infinite;
       }
       @keyframes blink {
@@ -293,255 +347,354 @@
           opacity: 1;
         }
         50% {
-          opacity: 0.3;
+          opacity: 0.2;
         }
       }
 
-      /* RIGHT DETAILS PANEL */
-      .panel {
-        background: var(--bg-panel);
+      .u5-led-group {
+        display: flex;
+        gap: 10px;
+        margin-left: auto;
+        align-items: center;
+        font-family: var(--font-mono);
+        font-size: 0.55rem;
+        color: var(--text-muted);
+        font-weight: bold;
+      }
+      .u5-led-group span {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .mini-pdu-group {
+        display: flex;
+        gap: 3px;
+        margin-left: auto;
+        align-items: center;
+        padding-right: 5px;
+      }
+      .mini-switch {
+        width: 6px;
+        height: 14px;
+        background: #0f172a;
+        border: 1px solid #334155;
+        border-radius: 1px;
+        transition: 0.2s;
+      }
+      .mini-switch.on {
+        background: var(--glow-pow);
+        box-shadow: 0 0 5px var(--glow-pow);
+        border-color: #fff;
+      }
+
+      /* --- DETAILS PANEL --- */
+      .info-panel {
+        background: var(--bg-glass);
+        border: 1px solid var(--border-subtle);
         border-radius: 12px;
-        border: 1px solid var(--border-color);
         padding: 2rem;
+        position: relative;
+        z-index: 10;
         display: flex;
         flex-direction: column;
         gap: 2rem;
-        overflow: hidden;
+        min-height: 600px;
+        width: 100%;
+        min-width: 0;
       }
-      .header-row {
+      .empty-hud {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: var(--text-muted);
+        text-align: center;
+        margin: auto 0;
+      }
+      .p-head {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        border-bottom: 1px solid var(--border-color);
-        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--border-subtle);
+        padding-bottom: 1.5rem;
+        flex-wrap: wrap;
+        gap: 1rem;
       }
-      .title-block h2 {
-        font-size: 1.8rem;
-        font-weight: 800;
+      .p-title {
+        font-family: var(--font-head);
+        font-size: clamp(1.5rem, 2.5vw, 2rem);
+        font-weight: 700;
         margin-bottom: 0.5rem;
       }
-      .badge {
-        display: inline-block;
-        padding: 0.25rem 0.75rem;
-        border-radius: 20px;
+      .p-desc {
+        font-size: 0.95rem;
+        color: #cbd5e1;
+        line-height: 1.6;
+        max-width: 800px;
+      }
+      .p-badge {
+        font-family: var(--font-mono);
         font-size: 0.75rem;
-        font-weight: 800;
-        letter-spacing: 1px;
-        font-family: "JetBrains Mono", monospace;
+        padding: 4px 12px;
+        border-radius: 4px;
+        border: 1px solid;
+        font-weight: 700;
       }
 
-      .empty-state {
-        text-align: center;
-        color: var(--text-muted);
-        padding: 4rem 1rem;
-      }
-      .empty-state svg {
-        width: 48px;
-        height: 48px;
-        opacity: 0.2;
-        margin-bottom: 1rem;
-      }
-
-      /* ATEM & WP VISUALIZER */
-      .sys-diagram {
-        display: flex;
-        gap: 1.5rem;
-        background: var(--bg-card);
-        padding: 1.5rem;
+      /* COMMON COMPONENT BOARDS */
+      .cb-wrap {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid #334155;
         border-radius: 8px;
-        border: 1px solid var(--border-color);
-        flex-wrap: wrap;
-        justify-content: center;
-        align-items: stretch;
+        padding: 1.5rem;
+        position: relative;
+        width: 100%;
+        transition: filter 0.3s;
       }
-      .sys-col {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        flex: 1;
-        min-width: 150px;
-        justify-content: center;
+      .cb-title {
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        margin-bottom: 1.5rem;
       }
 
-      .sys-group {
-        background: var(--bg-panel);
-        padding: 0.75rem;
+      /* --- 10 SWITCH PDU VISUALIZER --- */
+      .pdu-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 1rem;
+      }
+      .pdu-outlet {
+        background: #0f172a;
+        border: 2px solid #334155;
         border-radius: 6px;
-        border: 1px solid var(--border-color);
+        padding: 1rem;
         display: flex;
         flex-direction: column;
-        gap: 6px;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: 0.2s ease;
+        text-align: center;
+        user-select: none;
       }
-      .sys-lbl {
-        font-size: 0.6rem;
+      /* Interactive Outlet States */
+      .pdu-outlet.occupied {
+        cursor: pointer;
+      }
+      .pdu-outlet.occupied:hover {
+        border-color: #94a3b8;
+      }
+      .pdu-outlet.occupied.active:hover {
+        border-color: var(--glow-pow);
+        filter: brightness(1.3);
+      }
+      .pdu-outlet.active {
+        border-color: var(--glow-pow);
+        background: rgba(245, 158, 11, 0.1);
+        box-shadow: inset 0 0 15px rgba(245, 158, 11, 0.2);
+      }
+      .pdu-outlet.empty {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+
+      .pdu-num {
+        font-family: var(--font-mono);
+        font-size: 0.65rem;
         color: var(--text-muted);
         font-weight: bold;
-        letter-spacing: 1px;
-        text-align: center;
+        background: #000;
+        padding: 2px 6px;
+        border-radius: 4px;
+        transition: 0.2s;
+      }
+      .pdu-outlet.active .pdu-num {
+        color: #000;
+        background: var(--glow-pow);
+      }
+      .pdu-label {
+        font-size: 0.7rem;
+        color: #64748b;
+        font-weight: 600;
+      }
+      .pdu-outlet.active .pdu-label {
+        color: #fff;
+      }
+      .pdu-holes {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        opacity: 0.1;
+      }
+      .pdu-outlet.occupied .pdu-holes {
+        opacity: 0.8;
+      }
+      .pdu-outlet.active .pdu-holes {
+        opacity: 1;
+      }
+      .hole-pair {
+        display: flex;
+        gap: 4px;
+      }
+      .p-hole {
+        width: 4px;
+        height: 10px;
+        background: #000;
+        border-radius: 2px;
+      }
+      .p-pin {
+        width: 6px;
+        height: 6px;
+        background: #000;
+        border-radius: 50%;
+        margin: 0 auto;
       }
 
-      .sys-port {
-        background: #000;
-        border: 1px solid var(--border-color);
-        font-size: 0.7rem;
-        padding: 6px 8px;
-        border-radius: 4px;
-        color: var(--text-main);
-        font-family: "JetBrains Mono", monospace;
-        text-align: center;
-      }
-      .sys-port.yel {
-        border-left: 3px solid var(--c-cam);
-      }
-      .sys-port.pur {
-        border-left: 3px solid var(--c-audio);
+      /* --- ATEM / WP SCHEMATIC --- */
+      .atem-grid {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        gap: 1rem;
+        min-width: 800px;
+        position: relative;
       }
-      .sys-port.blu {
-        border-left: 3px solid var(--c-data);
-        display: flex;
-        justify-content: space-between;
-        gap: 8px;
+      .cb-scroll {
+        overflow-x: auto;
+        padding-bottom: 1rem;
       }
-      .sys-port.out {
-        display: flex;
-        justify-content: space-between;
-        text-align: left;
-        background: var(--bg-panel);
-        gap: 10px;
-      }
-      .sys-port.out span {
-        color: var(--text-muted);
-        font-size: 0.65rem;
-      }
-
-      .sys-hw {
-        background: linear-gradient(180deg, #1f2937, #111827);
-        border: 2px solid;
-        border-radius: 8px;
-        padding: 1rem;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+      .c-col {
         display: flex;
         flex-direction: column;
-        min-height: 180px;
-        flex: 1.5;
-        min-width: 200px;
+        gap: 12px;
+        z-index: 2;
       }
-      .sys-hw.atem {
-        border-color: var(--c-av);
-      }
-      .sys-hw.wp {
-        border-color: var(--c-data);
-        flex: 1;
+      .c-node {
+        background: #1e293b;
+        border: 1px solid #475569;
+        padding: 0.6rem 1rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
         min-width: 160px;
       }
-      .sys-hw h3 {
-        font-size: 1rem;
-        text-align: center;
-        margin: 0 0 1rem 0;
-        color: #fff;
-        border-bottom: 1px solid var(--border-color);
-        padding-bottom: 0.5rem;
+      .c-node span {
+        display: block;
+        font-family: var(--font-mono);
+        font-size: 0.65rem;
+        margin-bottom: 2px;
+      }
+      .c-node.cam span {
+        color: var(--glow-cam);
+      }
+      .c-node.aud span {
+        color: var(--glow-aud);
+      }
+      .c-node.dat span {
+        color: var(--glow-dat);
+      }
+      .c-node.av span {
+        color: var(--glow-av);
       }
 
-      .hw-out-ports {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-        margin-top: auto;
-      }
-      .sys-arrow-box {
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--border-color);
-        font-size: 1.5rem;
-        min-width: 40px;
-      }
-      .sys-arrow-box small {
-        position: absolute;
-        top: -15px;
-        font-size: 0.6rem;
-        color: var(--text-main);
-        white-space: nowrap;
-      }
-
-      .y-split {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-      }
-      .y-split span {
-        background: var(--c-audio);
-        color: #000;
-        font-size: 0.55rem;
-        font-weight: bold;
-        padding: 1px 4px;
-        border-radius: 2px;
-        line-height: 1;
-      }
-
-      /* Port Visualizer (Responsive Grid) */
-      .port-visualizer {
-        background: var(--bg-card);
+      .c-core {
+        background: linear-gradient(135deg, #1e293b, #0f172a);
+        border: 2px solid;
         padding: 1.5rem;
         border-radius: 8px;
-        border: 1px solid var(--border-color);
-        width: 100%;
+        text-align: center;
+        width: 140px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        z-index: 2;
+        transition: 0.4s ease;
       }
-      .port-grid {
+      .c-core.atem {
+        border-color: var(--glow-av);
+      }
+      .c-core.wp {
+        border-color: var(--glow-dat);
+      }
+      .c-core h3 {
+        font-family: var(--font-head);
+        font-size: 1rem;
+        margin-bottom: 4px;
+        color: #fff;
+      }
+      .c-core small {
+        font-family: var(--font-mono);
+        font-size: 0.6rem;
+        color: var(--text-muted);
+      }
+      #atem-wires {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      /* --- 24 PORT VISUALIZER --- */
+      .rj45-grid {
         display: grid;
-        grid-template-columns: repeat(12, minmax(0, 1fr));
-        gap: 4px;
-        margin-bottom: 6px;
-        width: 100%;
+        grid-template-columns: repeat(auto-fit, minmax(45px, 1fr));
+        gap: 6px;
+        margin-top: 1rem;
       }
-      .port {
+      .rj45-port {
         aspect-ratio: 1;
-        background: #000;
-        border: 2px solid #374151;
+        background: #1e293b;
         border-radius: 4px;
         position: relative;
-        cursor: pointer;
-        transition: 0.2s;
+        border-top: 3px solid #000;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-family: "JetBrains Mono";
-        font-size: clamp(0.5rem, 1.5vw, 0.7rem);
-        color: #4b5563;
-        padding: 0;
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        color: #64748b;
+        cursor: crosshair;
+        font-weight: bold;
       }
-      .port:hover {
-        border-color: #fff;
-        transform: translateY(-2px);
-        z-index: 10;
+      .rj45-port:hover {
+        background: #334155;
+        color: #fff;
+        z-index: 50;
       }
-      .pt-cam {
-        border-color: var(--c-cam);
+      .plug.pt-cam {
+        border-bottom: 3px solid var(--glow-cam);
         background: rgba(234, 179, 8, 0.1);
-        color: var(--c-cam);
+        color: var(--glow-cam);
       }
-      .pt-dat {
-        border-color: var(--c-data);
-        background: rgba(59, 130, 246, 0.1);
-        color: var(--c-data);
+      .plug.pt-dat {
+        border-bottom: 3px solid var(--glow-dat);
+        background: rgba(14, 165, 233, 0.1);
+        color: var(--glow-dat);
       }
-      .pt-av {
-        border-color: var(--c-av);
+      .plug.pt-av {
+        border-bottom: 3px solid var(--glow-av);
         background: rgba(139, 92, 246, 0.1);
-        color: var(--c-av);
+        color: var(--glow-av);
       }
-      .pt-up {
-        border-color: var(--c-uplink);
-        background: rgba(45, 212, 191, 0.1);
-        color: var(--c-uplink);
+      .plug.pt-up {
+        border-bottom: 3px solid var(--glow-ups);
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--glow-ups);
       }
 
-      .port::after {
+      .poe-icon {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        font-size: 0.5rem;
+        color: #fbbf24;
+      }
+
+      .rj45-port::after {
         content: attr(data-tip);
         position: absolute;
         bottom: 120%;
@@ -551,180 +704,128 @@
         color: #000;
         padding: 6px 10px;
         border-radius: 4px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        white-space: nowrap;
+        font-size: 0.7rem;
+        font-weight: 800;
+        white-space: pre;
         opacity: 0;
         pointer-events: none;
         transition: 0.2s;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-        z-index: 50;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        z-index: 99999;
+        text-align: center;
       }
-      .port:hover::after {
+      .rj45-port:hover::after {
         opacity: 1;
-        bottom: 140%;
+        bottom: 130%;
       }
 
-      .port-legend {
+      /* --- SISTERS PIPELINE (U9) --- */
+      .pl-wrap {
         display: flex;
-        gap: 1rem;
-        margin-top: 1rem;
-        font-size: 0.75rem;
-        justify-content: center;
-        flex-wrap: wrap;
-      }
-      .leg-item {
-        display: flex;
+        flex-direction: column;
         align-items: center;
-        gap: 6px;
-        color: var(--text-muted);
-      }
-      .leg-dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 2px;
-      }
-
-      /* U9 AV Flowchart */
-      .av-flow {
-        background: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
-        padding: 2rem;
-        position: relative;
-        font-size: 0.85rem;
         width: 100%;
+        gap: 0;
+        margin-top: 1rem;
       }
-      .flow-row {
-        display: flex;
-        justify-content: center;
-        gap: 2rem;
-        position: relative;
-        z-index: 2;
-        margin-bottom: 2rem;
-        flex-wrap: wrap;
-      }
-      .flow-row:last-child {
-        margin-bottom: 0;
-      }
-      .f-node {
-        background: var(--bg-panel);
-        border: 1px solid var(--border-color);
+      .pl-node {
+        background: #1e293b;
+        border: 1px solid #475569;
         padding: 1rem;
         border-radius: 8px;
-        width: 100%;
-        max-width: 200px;
         text-align: center;
+        width: 100%;
+        max-width: 240px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        z-index: 2;
         position: relative;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
       }
-      .f-node strong {
-        display: block;
-        margin-bottom: 4px;
+      .pl-node h4 {
+        font-size: 0.85rem;
         color: #fff;
+        margin-bottom: 4px;
       }
-      .f-node small {
+      .pl-node p {
+        font-family: var(--font-mono);
+        font-size: 0.65rem;
         color: var(--text-muted);
-        font-size: 0.7rem;
-        line-height: 1.4;
-        display: block;
       }
-      .f-badge {
+      .pl-tag {
         position: absolute;
         top: -10px;
         right: -10px;
-        background: var(--c-power);
+        background: var(--glow-pow);
         color: #000;
-        font-size: 0.65rem;
-        font-weight: 800;
+        font-family: var(--font-mono);
+        font-size: 0.6rem;
         padding: 2px 6px;
         border-radius: 4px;
-      }
-      .f-line-v {
-        width: 2px;
-        height: 2rem;
-        background: var(--border-color);
-        margin: 0 auto;
-        position: relative;
-      }
-      .f-fork {
-        display: flex;
-        justify-content: center;
-        position: relative;
-        width: 100%;
-        height: 2rem;
-      }
-      .f-fork-h {
-        position: absolute;
-        top: 0;
-        width: 314px;
-        max-width: 400px;
-        height: 2px;
-        translate: 58px;
-        background: var(--border-color);
-      }
-      .f-fork-v {
-        position: absolute;
-        top: 0;
-        width: 2px;
-        height: 100%;
-        background: var(--border-color);
-      }
-      .f-fork-v.left {
-        left: calc(50% - 100px);
-      }
-      .f-fork-v.right {
-        left: calc(50% + 215px);
+        font-weight: bold;
       }
 
-      /* Airflow Overlays */
-      body.mode-airflow .rack-container {
-        border-color: var(--c-airflow-cool);
-      }
-      body.mode-airflow .u-emp {
-        background: rgba(56, 189, 248, 0.1);
-        border-color: var(--c-airflow-cool);
-      }
-      body.mode-airflow .u-blk {
-        background: rgba(239, 68, 68, 0.1);
-        border-color: var(--c-airflow-hot);
-        color: var(--c-airflow-hot);
-      }
-      .air-particle {
-        position: absolute;
+      .pl-pipe-v {
         width: 4px;
-        height: 15px;
-        border-radius: 2px;
-        background: var(--c-airflow-cool);
+        height: 30px;
+        background: #475569;
+        position: relative;
+        z-index: 1;
+      }
+      .pl-fork {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        width: 100%;
+        max-width: 600px;
+        gap: 2rem;
+      }
+      .pl-branch {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+      }
+      .pl-join {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+      }
+      .pl-join .pl-node {
+        width: auto;
+        flex: 1;
+        padding: 0.75rem;
+      }
+
+      /* AIRFLOW OVERLAY */
+      body.air-mode .rack-enclosure {
+        border-color: #38bdf8;
+      }
+      body.air-mode .u-emp {
+        background: rgba(56, 189, 248, 0.1);
+        border-color: #38bdf8;
+      }
+      body.air-mode .u-blk {
+        background: rgba(239, 68, 68, 0.1);
+        border-color: #ef4444;
+      }
+      .thermal {
+        position: absolute;
+        width: 2px;
+        height: 30px;
+        background: linear-gradient(to top, transparent, #38bdf8, transparent);
         opacity: 0;
-        pointer-events: none;
         z-index: 20;
       }
-      body.mode-airflow .p-in {
-        animation: flowCool 2s infinite;
-        box-shadow: 0 0 10px var(--c-airflow-cool);
+      body.air-mode .p-in {
+        animation: thUp 2s infinite linear;
       }
-      body.mode-airflow .p-out {
-        animation: flowHot 2s infinite;
-        background: var(--c-airflow-hot);
-        box-shadow: 0 0 10px var(--c-airflow-hot);
+      body.air-mode .p-out {
+        background: linear-gradient(to top, transparent, #ef4444, transparent);
+        animation: thUp 2s infinite linear;
       }
-      @keyframes flowCool {
+      @keyframes thUp {
         0% {
           transform: translateY(20px);
-          opacity: 0;
-        }
-        50% {
-          opacity: 1;
-        }
-        100% {
-          transform: translateY(-40px);
-          opacity: 0;
-        }
-      }
-      @keyframes flowHot {
-        0% {
-          transform: translateY(10px);
           opacity: 0;
         }
         50% {
@@ -736,82 +837,32 @@
         }
       }
 
-      /* Global Power Mode Override */
-      body.mode-power .rack-container {
-        border-color: transparent;
-      }
-      body.mode-power
-        .rack-container.has-selection
-        .rack-unit:not(.selected):not(.related-highlight) {
-        opacity: 0.1;
-      }
-      body.mode-power .rack-unit {
-        opacity: 0.15;
-        border-color: #374151;
-      }
-      body.mode-power .rack-unit[data-pwr="ups"] {
-        opacity: 1;
-        border-color: var(--c-ups);
-        box-shadow: inset 20px 0 30px -20px var(--c-ups);
-      }
-      body.mode-power .rack-unit[data-pwr="pdu"] {
-        opacity: 1;
-        border-color: var(--c-power);
-        box-shadow: inset 20px 0 30px -20px var(--c-power);
-      }
-      body.mode-power .rack-unit[data-id="1"] {
-        opacity: 1;
-        border-color: var(--c-ups);
-      }
-      body.mode-power .rack-unit[data-id="2"] {
-        opacity: 1;
-        border-color: var(--c-power);
-      }
-      body.mode-power #svg-layer {
-        opacity: 1;
-      }
-
-      /* Mobile Adjustments */
+      /* RESPONSIVE */
       @media (max-width: 1024px) {
         main {
           grid-template-columns: 1fr;
           padding: 1rem;
         }
-        .rack-wrapper {
-          max-width: 450px;
+        .rack-enclosure {
           margin: 0 auto;
-          width: 100%;
         }
-        .panel {
-          padding: 1.5rem;
-        }
-      }
-      @media (max-width: 768px) {
-        .sys-arrow-box {
-          display: none;
-        } /* Hide horizontal arrows on wrap */
-        .f-fork,
-        .f-fork-h,
-        .f-fork-v {
-          display: none;
-        } /* Simplify AV flow on tiny screens */
-        .av-flow .flow-row {
-          gap: 1rem;
+        .pl-fork {
+          grid-template-columns: 1fr;
+          gap: 2rem;
         }
       }
     </style>
   </head>
   <body>
     <header>
-      <div class="header-title">
-        <h1>AMS Media Rack</h1>
-        <p>Interactive Architecture & Routing Visualizer</p>
+      <div class="brand">
+        <h1>AMS MEDIA RACK</h1>
       </div>
-      <div class="toggles">
-        <button class="toggle-btn" id="btn-airflow">
+      <div class="controls">
+        <button class="cyber-btn" id="btn-airflow">
           <svg
-            width="18"
-            height="18"
+            width="16"
+            height="16"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -821,12 +872,12 @@
               d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"
             />
           </svg>
-          Airflow
+          Thermal
         </button>
-        <button class="toggle-btn" id="btn-power">
+        <button class="cyber-btn" id="btn-power">
           <svg
-            width="18"
-            height="18"
+            width="16"
+            height="16"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -843,112 +894,123 @@
       <div class="rack-wrapper">
         <div class="rack-legend">
           <div class="rl-item">
-            <div class="rl-dot" style="background: var(--c-power)"></div>
-            Power
+            <div class="rl-dot" style="background: var(--glow-pow)"></div>
+            Surge Power
           </div>
           <div class="rl-item">
-            <div class="rl-dot" style="background: var(--c-data)"></div>
-            Data
+            <div class="rl-dot" style="background: var(--glow-ups)"></div>
+            Battery Power
           </div>
           <div class="rl-item">
-            <div class="rl-dot" style="background: var(--c-av)"></div>
+            <div class="rl-dot" style="background: var(--glow-dat)"></div>
+            Data/Network
+          </div>
+          <div class="rl-item">
+            <div class="rl-dot" style="background: var(--glow-av)"></div>
             Audio/Video
-          </div>
-          <div class="rl-item">
-            <div class="rl-dot" style="background: var(--c-storage)"></div>
-            Storage
           </div>
         </div>
 
-        <div class="rack-container" id="rack">
-          <svg id="svg-layer"></svg>
-          <!-- Units Injected via JS -->
+        <div class="rack-enclosure" id="rack-hardware">
+          <svg id="rack-lines-layer"></svg>
+          <!-- Units injected by JS -->
         </div>
       </div>
 
-      <div class="panel" id="detail-panel">
-        <!-- Initial Empty State -->
-        <div class="empty-state">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
+      <div class="info-panel" id="hud-panel">
+        <div class="empty-hud">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5">
             <rect x="2" y="2" width="20" height="8" rx="2" ry="2" />
             <rect x="2" y="14" width="20" height="8" rx="2" ry="2" />
             <line x1="6" y1="6" x2="6.01" y2="6" />
             <line x1="6" y1="18" x2="6.01" y2="18" />
           </svg>
-          <h2>Select a Rack Unit</h2>
-          <p>
-            Click any unit to view interactive signal flows, port mappings, and
-            connections.<br />Click again to deselect.<br /><br /><em
-              >Note: Blanking Panels and Intakes are locked.</em
-            >
-          </p>
+          <h2
+            style="
+              font-family: var(--font-head);
+              margin-bottom: 8px;
+              color: #fff;
+            "
+          >
+            AWAITING SELECTION
+          </h2>
+          <p>Click any active hardware unit to view its routing schematics.</p>
         </div>
       </div>
     </main>
 
     <script>
-      // Data Structure
-      const RACK = [
+      // --- GLOBAL PDU STATE (1, 5, 6, 10 ON by default) --- //
+      let pduState = {
+        1: true,
+        2: false,
+        3: false,
+        4: false,
+        5: true,
+        6: true,
+        7: false,
+        8: false,
+        9: false,
+        10: true,
+      };
+
+      // --- DATA ARCHITECTURE --- //
+      const SYS = [
         {
           id: 1,
-          type: "pow",
+          type: "ups",
           name: "UPS Battery Backup",
           pwr: "none",
-          links: [3, 7],
-          desc: "Maintains critical network/storage uptime during outages. Placed at the absolute bottom for weight safety.",
+          dLinks: [],
+          desc: "Core Uninterruptible Power Supply. Distributes stable power to the entire rack.",
         },
         {
           id: 2,
           type: "pow",
           name: "10-Switch PDU",
-          pwr: "none",
-          links: [5, 9],
-          desc: "Main power strip with physical toggle switches for safe, isolated rebooting of AV gear without unplugging cables.",
+          pwr: "surge",
+          dLinks: [],
+          desc: "Main power strip with physical toggle switches. Protected by UPS Surge port.",
         },
         {
           id: 3,
           type: "sto",
           name: "Synology RAID NAS",
           pwr: "ups",
-          links: [1, 7, 8],
-          desc: "Network Attached Storage. Hard drives placed low to intake the absolute coldest air in the room.",
+          dLinks: [7],
+          desc: "Network Attached Storage. Hard drives placed low for maximum cooling.",
         },
         {
           id: 4,
           type: "emp",
-          name: "Fresh Air Intake",
+          name: "Intake Vent",
           pwr: "none",
-          links: [],
+          dLinks: [],
           desc: "",
         },
         {
           id: 5,
           type: "av",
-          name: "ATEM & Web Presenter",
+          name: "Web Presenter & ATEM",
           pwr: "pdu",
-          links: [2, 7, 8, 9],
-          isATEM: true,
-          desc: "Core broadcast hub. Extremely sensitive to dust and heat. Blow out vents every two weeks.",
+          dLinks: [7, 8, 9],
+          isAtem: true,
+          desc: "Core broadcast hub. Processes inputs and encodes live stream.",
         },
         {
           id: 6,
           type: "emp",
-          name: "Fresh Air Intake",
+          name: "Intake Vent",
           pwr: "none",
-          links: [],
+          dLinks: [],
           desc: "",
         },
         {
           id: 7,
           type: "dat",
-          name: "24-Port Network Switch (PoE)",
+          name: "24-Port Switch (PoE)",
           pwr: "ups",
-          links: [1, 3, 5, 8],
+          dLinks: [3, 5, 8],
           isSwitch: true,
           desc: "Core data routing and PoE provider.",
         },
@@ -957,439 +1019,617 @@
           type: "dat",
           name: "24-Port Patch Panel",
           pwr: "none",
-          links: [5, 7, 9],
+          dLinks: [5, 7, 9],
           isPatch: true,
-          desc: "Terminates all permanent wall cables from the building.",
+          desc: "Terminates all permanent building wall cables.",
         },
         {
           id: 9,
           type: "av",
-          name: "Sisters TVs & Projectors",
+          name: "Sisters A/V & Matrices",
           pwr: "pdu",
-          links: [2, 5, 8],
-          isFlow: true,
-          desc: "Receives the ATEM AUX signal, converts it to HDMI, splits it, and transmits it via Ethernet and HDMI Matrices.",
+          dLinks: [5, 8],
+          isPipe: true,
+          desc: "Converts ATEM AUX signal, splits it, and routes to Projectors and Sisters TVs.",
         },
-        { id: 10, type: "av", name: "A/V Overflow Space", hidden: true },
+        { id: 10, type: "av", name: "A/V Overflow", hidden: true },
         {
           id: 11,
-          type: "fut",
-          name: "Announcement TVs (Reserved)",
+          type: "blk",
+          name: "Blanking Panel",
           pwr: "none",
-          links: [],
-          desc: "Reserved vertical space for the future Announcement TV system.",
+          dLinks: [],
         },
-        { id: 12, type: "blk", name: "Blanking Panel", pwr: "none", links: [] },
-        { id: 13, type: "blk", name: "Blanking Panel", pwr: "none", links: [] },
-        { id: 14, type: "blk", name: "Blanking Panel", pwr: "none", links: [] },
-        { id: 15, type: "blk", name: "Blanking Panel", pwr: "none", links: [] },
+        {
+          id: 12,
+          type: "blk",
+          name: "Blanking Panel",
+          pwr: "none",
+          dLinks: [],
+        },
+        {
+          id: 13,
+          type: "blk",
+          name: "Blanking Panel",
+          pwr: "none",
+          dLinks: [],
+        },
+        {
+          id: 14,
+          type: "blk",
+          name: "Blanking Panel",
+          pwr: "none",
+          dLinks: [],
+        },
+        {
+          id: 15,
+          type: "pow",
+          name: "Exhaust Fans",
+          pwr: "pdu",
+          dLinks: [],
+          desc: "Top rack exhaust fans. Driven by PDU Switch 10.",
+        },
       ];
-
-      const TYPE_LABELS = {
-        pow: "POWER",
-        dat: "DATA",
-        sto: "STORAGE",
-        av: "A/V",
-        fut: "FUTURE",
-      };
 
       const PORTS = [
-        { p: 1, type: "cam", label: "Lecture Cam (SDI/PoE)" },
-        { p: 2, type: "cam", label: "Khutbah Cam (SDI/PoE)" },
-        { p: 3, type: "cam", label: "Prayer Cam (SDI/PoE)" },
-        { p: 4, type: "cam", label: "Back Cam (SDI/PoE)" },
-        { p: 5, type: "dat", label: "Web Presenter (U5)" },
-        { p: 6, type: "dat", label: "ATEM Switcher (U5)" },
-        { p: 7, type: "dat", label: "Synology NAS (U3)" },
-        { p: 8, type: "dat", label: "Media Desk Wall" },
-        { p: 9, type: "dat", label: "Media Desk Wall" },
-        { p: 10, type: "dat", label: "Media Desk Wall" },
-        { p: 11, type: "dat", label: "Media Desk Wall" },
-        { p: 12, type: "dat", label: "Media Desk Wall" },
-        { p: 13, type: "dat", label: "Media Desk Wall" },
-        { p: 14, type: "dat", label: "Media Desk Wall" },
-        { p: 15, type: "dat", label: "Media Desk Wall" },
-        { p: 16, type: "dat", label: "Media Desk Wall" },
-        { p: 17, type: "none", label: "Empty / Blank" },
-        { p: 18, type: "av", label: "Desk Wall Plug (HDMI -> U9 Matrix)" },
-        { p: 19, type: "av", label: "Basement Feed (Cat6 Out)" },
-        { p: 20, type: "av", label: "Sisters TV Backup (Cat6)" },
-        { p: 21, type: "av", label: "Sisters TV Main (Cat6 from U9)" },
-        { p: 22, type: "dat", label: "Wireless Access Point" },
-        { p: 23, type: "up", label: "MDF Upstream 1" },
-        { p: 24, type: "up", label: "MDF Upstream 2 / Internet" },
+        { p: 1, t: "cam", l: "Lecture Cam", poe: true },
+        { p: 2, t: "cam", l: "Khutbah Cam", poe: true },
+        { p: 3, t: "cam", l: "Prayer Cam", poe: true },
+        { p: 4, t: "cam", l: "Back Cam", poe: true },
+        { p: 5, t: "dat", l: "Web Presenter" },
+        { p: 6, t: "dat", l: "ATEM Switcher" },
+        { p: 7, t: "dat", l: "Synology NAS" },
+        { p: 8, t: "dat", l: "Desk Wall" },
+        { p: 9, t: "dat", l: "Desk Wall" },
+        { p: 10, t: "dat", l: "Desk Wall" },
+        { p: 11, t: "dat", l: "Desk Wall" },
+        { p: 12, t: "dat", l: "Desk Wall" },
+        { p: 13, t: "dat", l: "Desk Wall" },
+        { p: 14, t: "dat", l: "Desk Wall" },
+        { p: 15, t: "dat", l: "Desk Wall" },
+        { p: 16, t: "dat", l: "Desk Wall" },
+        { p: 17, t: "none", l: "Empty / Blank" },
+        { p: 18, t: "av", l: "Desk Wall Plug (HDMI)" },
+        { p: 19, t: "dat", l: "Basement Feed" },
+        { p: 20, t: "dat", l: "Sisters TV Backup" },
+        { p: 21, t: "dat", l: "Sisters TV Main" },
+        { p: 22, t: "dat", l: "Wireless AP", poe: true },
+        { p: 23, t: "up", l: "MDF Upstream 1" },
+        { p: 24, t: "up", l: "MDF Upstream 2" },
       ];
 
-      let activeUnitId = null;
+      let activeId = null;
+      const rackDOM = document.getElementById("rack-hardware");
+      const svgLayer = document.getElementById("rack-lines-layer");
+      const hudDOM = document.getElementById("hud-panel");
+      const emptyState = hudDOM.innerHTML;
 
-      const rackDOM = document.getElementById("rack");
-      const svgLayer = document.getElementById("svg-layer");
-      const panelDOM = document.getElementById("detail-panel");
-      const emptyStateHTML = panelDOM.innerHTML;
-
-      // Render Rack DOM
-      RACK.forEach((unit) => {
+      // --- RENDER PHYSICAL RACK --- //
+      SYS.forEach((unit) => {
         if (unit.hidden) return;
         const el = document.createElement("div");
-        el.className = `rack-unit u-${unit.type} ${["blk", "emp"].includes(unit.type) ? "" : "clickable"}`;
+        el.className = `rack-unit u-${unit.type}`;
         el.dataset.id = unit.id;
         el.dataset.pwr = unit.pwr;
 
-        let led = ["dat", "av", "sto"].includes(unit.type)
-          ? `<div class="status-led"></div>`
-          : "";
+        let innards = "";
+
+        // Generate Specific Hardware Innards
+        if (unit.id === 2) {
+          // 10 Mini Switches for the PDU
+          innards = `<div class="mini-pdu-group">
+                    ${[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => `<div id="mini-sw-${i}" class="mini-switch ${pduState[i] ? "on" : ""}"></div>`).join("")}
+                </div>`;
+        } else if (unit.id === 5) {
+          // Split LEDs for ATEM and WP
+          innards = `<div class="u5-led-group">
+            <span>WP <div id="led-wp" class="hw-led active"></div></span>
+            <span>ATEM <div id="led-atem" class="hw-led active"></div></span>
+                </div>`;
+        } else {
+          // Standard single LED
+          innards =
+            ["dat", "av", "sto", "pow", "ups"].includes(unit.type) &&
+            !["blk", "emp"].includes(unit.type)
+              ? `<div class="hw-led active" style="margin-left:auto;"></div>`
+              : "";
+        }
+
         let air = "";
         if (unit.type === "emp")
-          air = `<div class="air-particle p-in" style="left:20%"></div><div class="air-particle p-in" style="left:50%"></div><div class="air-particle p-in" style="left:80%"></div>`;
+          air = `<div class="thermal p-in" style="left:20%"></div><div class="thermal p-in" style="left:50%"></div><div class="thermal p-in" style="left:80%"></div>`;
         if (unit.id === 15)
-          air = `<div class="air-particle p-out" style="left:30%"></div><div class="air-particle p-out" style="left:70%"></div>`;
+          air = `<div class="thermal p-out" style="left:30%"></div><div class="thermal p-out" style="left:70%"></div>`;
 
-        el.innerHTML = `<div class="unit-num">U${unit.id}</div><div class="unit-name">${unit.name}</div>${led}${air}`;
-
-        if (!["blk", "emp"].includes(unit.type)) {
-          el.onclick = () => selectUnit(unit);
-        }
+        el.innerHTML = `<div class="u-id">U${unit.id}</div><div class="u-name">${unit.name}</div>${innards}${air}`;
+        if (!["blk", "emp"].includes(unit.type))
+          el.onclick = () => activateUnit(unit);
         rackDOM.appendChild(el);
       });
 
-      function selectUnit(data) {
-        // Turn off Global modes
-        document.body.classList.remove("mode-power", "mode-airflow");
-        document
-          .querySelectorAll(".toggle-btn")
-          .forEach((btn) => btn.classList.remove("active"));
+      // Initialize proper power states visually on load
+      applyPowerStates();
 
-        // Toggle Deselection
-        if (activeUnitId === data.id) {
-          activeUnitId = null;
-          rackDOM.classList.remove("has-selection");
+      function activateUnit(data) {
+        document.body.classList.remove("air-mode", "pwr-mode");
+        document
+          .querySelectorAll(".cyber-btn")
+          .forEach((b) => b.classList.remove("active-air", "active-pwr"));
+
+        if (activeId === data.id) {
+          activeId = null;
+          rackDOM.classList.remove("focused");
           document
             .querySelectorAll(".rack-unit")
             .forEach((el) =>
               el.classList.remove("selected", "related-highlight"),
             );
           svgLayer.innerHTML = "";
-          panelDOM.innerHTML = emptyStateHTML;
+          hudDOM.innerHTML = emptyState;
           return;
         }
 
-        activeUnitId = data.id;
-        rackDOM.classList.add("has-selection");
+        activeId = data.id;
+        rackDOM.classList.add("focused");
         document.querySelectorAll(".rack-unit").forEach((el) => {
           el.classList.remove("selected", "related-highlight");
           if (el.dataset.id == data.id) el.classList.add("selected");
-          else if (data.links.includes(parseInt(el.dataset.id)))
+          else if (data.dLinks && data.dLinks.includes(parseInt(el.dataset.id)))
             el.classList.add("related-highlight");
         });
 
-        // Populate Panel
-        const typeColor = {
-          pow: "var(--c-power)",
-          dat: "var(--c-data)",
+        const colors = {
+          pow: "var(--glow-pow)",
+          ups: "var(--glow-ups)",
+          dat: "var(--glow-dat)",
           sto: "var(--c-storage)",
-          av: "var(--c-av)",
-          fut: "var(--c-uplink)",
-        }[data.type];
-        const badgeText = TYPE_LABELS[data.type] || data.type;
+          av: "var(--glow-av)",
+        };
+        const c = colors[data.type] || "#64748b";
 
-        let contentHTML = `
-                <div class="header-row">
-                    <div class="title-block">
-                        <h2>U${data.id}: ${data.name}</h2>
-                        <span class="badge" style="background: ${typeColor}22; color: ${typeColor}; border: 1px solid ${typeColor}">${badgeText}</span>
-                    </div>
-                </div>
-                <p style="color: var(--text-muted); line-height: 1.6;">${data.desc}</p>
-            `;
-
-        if (data.isATEM) contentHTML += renderATEMFlow();
-        if (data.isSwitch || data.isPatch)
-          contentHTML += renderPortView(data.isPatch);
-        if (data.isFlow) contentHTML += renderAVFlow();
-
-        panelDOM.innerHTML = contentHTML;
-        drawSelectionLines(data);
-      }
-
-      // VISUALIZER RENDERERS
-      function renderATEMFlow() {
-        return `
-                <h4 style="color: #fff; margin-bottom: 0.5rem;">Hardware & Signal Routing</h4>
-                <div class="sys-diagram">
-                    
-                    <!-- INPUTS COLUMN -->
-                    <div class="sys-col">
-                        <div class="sys-group">
-                            <div class="sys-lbl">SDI CAMERAS</div>
-                            <div class="sys-port yel">Cam 1 (Port 5)</div>
-                            <div class="sys-port yel">Cam 2 (Port 6)</div>
-                            <div class="sys-port yel">Cam 3 (Port 7)</div>
-                            <div class="sys-port yel">Cam 4 (Port 8)</div>
-                        </div>
-                        <div class="sys-group">
-                            <div class="sys-lbl">XLR AUDIO IN</div>
-                            <div class="sys-port pur">
-                                <span>Mixer Aux 4</span>
-                                <div class="y-split"><span>L</span><span>R</span></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ATEM BLOCK -->
-                    <div class="sys-hw atem">
-                        <h3>ATEM Switcher</h3>
-                        <div class="hw-out-ports">
-                            <div class="sys-port out">Multiview (HDMI) <span>➔ Media TV</span></div>
-                            <div class="sys-port out">AUX (SDI) <span>➔ Unit 9</span></div>
-                        </div>
-                    </div>
-
-                    <div class="sys-arrow-box">
-                        <small>PRGRM (SDI)</small>
-                        →
-                    </div>
-
-                    <!-- WP BLOCK -->
-                    <div class="sys-hw wp">
-                        <h3>Web Presenter</h3>
-                        <div class="hw-out-ports">
-                            <div class="sys-port out blu">USB-C Webcam <span>➔ Media PC</span></div>
-                        </div>
-                    </div>
-
+        let html = `
+                <div class="p-head">
+                    <div><div class="p-title">U${data.id} ${data.name}</div><div class="p-desc">${data.desc}</div></div>
+                    <div class="p-badge" style="color: ${c}; border-color: ${c}; background: ${c}11;">SYS.${data.type.toUpperCase()}</div>
                 </div>
             `;
+
+        if (data.id === 1) html += buildUPS();
+        if (data.id === 2) html += buildPDU();
+        if (data.isAtem) html += buildAtem();
+        if (data.isSwitch || data.isPatch) html += buildPorts(data.isPatch);
+        if (data.isPipe) html += buildPipeline();
+
+        hudDOM.innerHTML = html;
+
+        drawRackLines(data);
+        if (data.isAtem) setTimeout(drawAtemWires, 50);
       }
 
-      function renderPortView(isPatch) {
-        let title = isPatch
-          ? "Passive Wall Terminations"
-          : "Active Network Connections";
-        return `
-                <div class="port-visualizer">
-                    <h4 style="margin-bottom: 1rem; color: #fff;">${title}</h4>
-                    <div class="port-grid">
-                        ${PORTS.slice(0, 12)
-                          .map(
-                            (p) =>
-                              `<div class="port pt-${p.type}" data-tip="Port ${p.p}: ${p.label}">${p.p}</div>`,
-                          )
-                          .join("")}
-                    </div>
-                    <div class="port-grid">
-                        ${PORTS.slice(12, 24)
-                          .map(
-                            (p) =>
-                              `<div class="port pt-${p.type}" data-tip="Port ${p.p}: ${p.label}">${p.p}</div>`,
-                          )
-                          .join("")}
-                    </div>
-                    <div class="port-legend">
-                        <div class="leg-item"><div class="leg-dot" style="background:var(--c-cam)"></div> Cameras</div>
-                        <div class="leg-item"><div class="leg-dot" style="background:var(--c-data)"></div> Data/Web</div>
-                        <div class="leg-item"><div class="leg-dot" style="background:var(--c-av)"></div> A/V Signal</div>
-                        <div class="leg-item"><div class="leg-dot" style="background:var(--c-uplink)"></div> Internet</div>
-                    </div>
-                </div>
-            `;
+      // --- POWER STATE ENGINE --- //
+      function togglePDU(ch) {
+        pduState[ch] = !pduState[ch];
+        applyPowerStates();
       }
 
-      function renderAVFlow() {
-        return `
-                <div class="av-flow">
-                    <h4 style="margin-bottom: 2rem; color: #fff; text-align:center;">Signal Flow: Sisters TVs & Projectors</h4>
-                    <div class="flow-row"><div class="f-node" style="border-top: 3px solid var(--c-data)"><strong>ATEM AUX Out (U5)</strong><small>Source Signal</small></div></div>
-                    <div class="f-line-v"></div>
-                    <div class="flow-row"><div class="f-node" style="border-left: 3px solid var(--c-power)"><div class="f-badge">5V USB-C</div><strong>BM Converter</strong><small>SDI to HDMI</small></div></div>
-                    <div class="f-line-v"></div>
-                    <div class="flow-row"><div class="f-node" style="border-left: 3px solid #eab308"><strong>HDMI Splitter</strong><small>Duplicates Output</small></div></div>
-                    
-                    <div class="f-fork"><div class="f-fork-h"></div><div class="f-fork-v left"></div><div class="f-fork-v right"></div></div>
-                    
-                    <div class="flow-row" style="gap: 1rem;">
-                        <div style="display:flex; flex-direction:column; align-items:center; flex:1; min-width: 180px;">
-                            <div class="f-node" style="margin-bottom: 1rem;"><strong>Ethernet Receiver</strong><small>HDMI to Ethernet</small></div>
-                            <div class="f-line-v" style="height: 1.5rem;"></div>
-                            <div class="f-node" style="border-bottom: 3px solid var(--c-av); background:#1f2937;"><strong>Sisters TVs</strong><small>Via Patch Port 21</small></div>
-                        </div>
-                        <div style="display:flex; flex-direction:column; align-items:center; flex:1; min-width: 180px;">
-                            <div style="display:flex; gap:10px; margin-bottom:1rem; align-items:center;">
-                                <div class="f-node" style="width:auto; min-width:80px; background:#1f2937; padding:0.5rem;"><small>Wall Plug<br>(P18)</small></div>
-                                <div style="color:var(--border-color);">→</div>
-                                <div class="f-node"><strong>4-Way Switch</strong><small>Inputs: ATEM & Wall</small></div>
-                            </div>
-                            <div class="f-line-v" style="height: 1.5rem;"></div>
-                            <div class="f-node" style="border-bottom: 3px solid var(--c-av); background:#1f2937;"><strong>Projector Matrix</strong><small>Main Hall Display</small></div>
-                        </div>
-                    </div>
-                </div>
-            `;
+      function applyPowerStates() {
+        // Update Rack UI Visuals
+        const getU = (id) =>
+          document.querySelector(`.rack-unit[data-id="${id}"]`);
+
+        if (getU(9)) getU(9).classList.toggle("power-off", !pduState[1]);
+        if (getU(15)) getU(15).classList.toggle("power-off", !pduState[10]);
+
+        // Unit 5 independent LEDs
+        if (getU(5)) {
+          // If BOTH are off, kill the whole unit
+          getU(5).classList.toggle("power-off", !pduState[5] && !pduState[6]);
+
+          // Update individual LEDs
+          const ledAtem = document.getElementById("led-atem");
+          const ledWp = document.getElementById("led-wp");
+
+          if (ledAtem) ledAtem.classList.toggle("active", pduState[6]);
+          if (ledWp) ledWp.classList.toggle("active", pduState[5]);
+        }
+
+        // Update Mini Switches on Rack Diagram
+        for (let i = 1; i <= 10; i++) {
+          const ms = document.getElementById(`mini-sw-${i}`);
+          if (ms) ms.classList.toggle("on", pduState[i]);
+        }
+
+        // Update Details HUD if currently viewing
+        if (activeId === 2) {
+          // Update large PDU switches visual
+          for (let i = 1; i <= 10; i++) {
+            const out = document.getElementById(`pdu-out-${i}`);
+            if (out && out.classList.contains("occupied")) {
+              if (pduState[i]) out.classList.add("active");
+              else out.classList.remove("active");
+            }
+          }
+        } else if (activeId === 5) {
+          const atem = document.getElementById("core-atem");
+          if (atem) atem.classList.toggle("power-off", !pduState[6]);
+          const wp = document.getElementById("core-wp");
+          if (wp) wp.classList.toggle("power-off", !pduState[5]);
+        } else if (activeId === 9) {
+          const pipe = document.getElementById("pipe-board");
+          if (pipe) pipe.classList.toggle("power-off", !pduState[1]);
+        }
       }
 
-      // --- DYNAMIC SVG DRAWING --- //
-      function getCenterY(el, containerRect) {
+      // --- RACK SVG LINES --- //
+      function getCY(elId) {
+        const el = document.querySelector(`.rack-unit[data-id="${elId}"]`);
+        if (!el) return 0;
         return (
           el.getBoundingClientRect().top -
-          containerRect.top +
+          rackDOM.getBoundingClientRect().top +
           el.offsetHeight / 2
         );
       }
 
-      function drawSelectionLines(data) {
+      function drawRackLines(data) {
         svgLayer.innerHTML = "";
-        const units = Array.from(document.querySelectorAll(".rack-unit"));
-        const getEl = (id) => units.find((u) => u.dataset.id == id);
-        const rackRect = rackDOM.getBoundingClientRect();
-        let svgHTML = "";
-        const selfEl = getEl(data.id);
-        if (!selfEl) return;
-        const selfY = getCenterY(selfEl, rackRect);
+        let html = "";
+        const selfY = getCY(data.id);
 
-        // DATA/AV LINES (Left Side - Blue) - ONLY if not a Power Unit
-        if (data.type !== "pow") {
-          const dataLinkIds = data.links.filter((id) => id !== 1 && id !== 2); // Exclude UPS/PDU
-          if (dataLinkIds.length > 0) {
-            const linkEls = dataLinkIds.map((id) => getEl(id)).filter(Boolean);
-            const allY = [
-              selfY,
-              ...linkEls.map((el) => getCenterY(el, rackRect)),
-            ];
-            const minY = Math.min(...allY);
-            const maxY = Math.max(...allY);
-            const busX = 14;
+        // DATA LINES
+        if (
+          data.type !== "pow" &&
+          data.type !== "ups" &&
+          data.dLinks &&
+          data.dLinks.length > 0
+        ) {
+          const ys = [selfY, ...data.dLinks.map((id) => getCY(id))];
+          const minY = Math.min(...ys);
+          const maxY = Math.max(...ys);
+          const busX = 14;
+          html += `<path d="M ${busX} ${minY} L ${busX} ${maxY}" stroke="var(--glow-dat)" stroke-width="3" fill="none" opacity="0.8"/>`;
 
-            svgHTML += `<path d="M ${busX} ${minY} L ${busX} ${maxY}" stroke="var(--c-data)" stroke-width="3" fill="none" opacity="0.8"/>`;
-            [selfEl, ...linkEls].forEach((el) => {
-              const y = getCenterY(el, rackRect);
-              svgHTML += `<path d="M ${busX} ${y} L ${busX + 16} ${y}" stroke="var(--c-data)" stroke-width="3" fill="none" opacity="0.8"/>`;
-              svgHTML += `<circle cx="${busX + 16}" cy="${y}" r="3" fill="var(--c-data)" />`;
-            });
-          }
+          [data.id, ...data.dLinks].forEach((id) => {
+            const y = getCY(id);
+            html += `<path d="M ${busX} ${y} L ${busX + 14} ${y}" stroke="var(--glow-dat)" stroke-width="3" fill="none" class="beam" opacity="0.8"/>`;
+            html += `<circle cx="${busX + 14}" cy="${y}" r="3" fill="var(--glow-dat)"/>`;
+          });
         }
 
-        // POWER LINES (Right Side)
-        let pSrc = null;
-        let pTgts = [];
-        let pCol = "";
+        // POWER LINES
+        const busX = rackDOM.getBoundingClientRect().width - 14;
+        const drawPwrBus = (srcId, tgtIds, col, dashed = false) => {
+          if (tgtIds.length === 0) return;
+          const ys = [getCY(srcId), ...tgtIds.map((id) => getCY(id))];
+          const minY = Math.min(...ys);
+          const maxY = Math.max(...ys);
+          const dashCls = dashed ? "surge-beam" : "beam";
+          const dashAttr = dashed ? 'stroke-dasharray="4 6"' : "";
+
+          html += `<path d="M ${busX} ${minY} L ${busX} ${maxY}" stroke="${col}" ${dashAttr} stroke-width="3" fill="none" opacity="0.8"/>`;
+          [srcId, ...tgtIds].forEach((id) => {
+            const y = getCY(id);
+            html += `<path d="M ${busX} ${y} L ${busX - 14} ${y}" stroke="${col}" ${dashAttr} stroke-width="3" fill="none" class="${dashCls}" opacity="0.8"/>`;
+            html += `<circle cx="${busX - 14}" cy="${y}" r="3" fill="${col}"/>`;
+          });
+        };
+
         if (data.id === 1) {
-          pSrc = selfEl;
-          pTgts = units.filter((u) => u.dataset.pwr === "ups");
-          pCol = "var(--c-ups)";
+          drawPwrBus(1, [3, 7], "var(--glow-ups)", false);
+          drawPwrBus(1, [2], "var(--glow-srg)", true);
         } else if (data.id === 2) {
-          pSrc = selfEl;
-          pTgts = units.filter((u) => u.dataset.pwr === "pdu");
-          pCol = "var(--c-power)";
-        } else if (data.pwr === "ups") {
-          pSrc = getEl(1);
-          pTgts = [selfEl];
-          pCol = "var(--c-ups)";
-        } else if (data.pwr === "pdu") {
-          pSrc = getEl(2);
-          pTgts = [selfEl];
-          pCol = "var(--c-power)";
-        }
+          drawPwrBus(2, [5, 9, 15], "var(--glow-pow)", false);
+        } else if (data.pwr === "ups")
+          drawPwrBus(1, [data.id], "var(--glow-ups)", false);
+        else if (data.pwr === "pdu")
+          drawPwrBus(2, [data.id], "var(--glow-pow)", false);
+        else if (data.pwr === "surge")
+          drawPwrBus(1, [data.id], "var(--glow-srg)", true);
 
-        if (pSrc && pTgts.length > 0) {
-          const allY = [
-            getCenterY(pSrc, rackRect),
-            ...pTgts.map((el) => getCenterY(el, rackRect)),
-          ];
-          const minY = Math.min(...allY);
-          const maxY = Math.max(...allY);
-          const busX = rackRect.width - 14;
-
-          svgHTML += `<path d="M ${busX} ${minY} L ${busX} ${maxY}" stroke="${pCol}" stroke-dasharray="4" stroke-width="3" fill="none" opacity="0.8"/>`;
-          [pSrc, ...pTgts].forEach((el) => {
-            const y = getCenterY(el, rackRect);
-            svgHTML += `<path d="M ${busX} ${y} L ${busX - 16} ${y}" stroke="${pCol}" stroke-width="3" fill="none" opacity="0.8"/>`;
-            svgHTML += `<circle cx="${busX - 16}" cy="${y}" r="3" fill="${pCol}" />`;
-          });
-        }
-
-        svgLayer.innerHTML = svgHTML;
+        svgLayer.innerHTML = html;
       }
 
-      function drawGlobalPowerLines() {
-        svgLayer.innerHTML = "";
-        const units = Array.from(document.querySelectorAll(".rack-unit"));
-        const rackRect = rackDOM.getBoundingClientRect();
-        let svgHTML = "";
+      // --- SCHEMATIC BUILDERS --- //
 
-        const u1 = units.find((u) => u.dataset.id === "1");
-        const upsTargets = units.filter((u) => u.dataset.pwr === "ups");
-        if (u1 && upsTargets.length > 0) {
-          const startY = getCenterY(u1, rackRect);
-          const endY = getCenterY(upsTargets[upsTargets.length - 1], rackRect);
-          const busX = rackRect.width - 25;
-          svgHTML += `<path d="M ${busX} ${startY} L ${busX} ${endY}" stroke="var(--c-ups)" stroke-width="3" fill="none" />`;
-          svgHTML += `<path d="M ${busX} ${startY} L ${busX - 25} ${startY}" stroke="var(--c-ups)" stroke-width="3" fill="none" />`;
-          upsTargets.forEach((tgt) => {
-            svgHTML += `<path d="M ${busX} ${getCenterY(tgt, rackRect)} L ${busX - 25} ${getCenterY(tgt, rackRect)}" stroke="var(--c-ups)" stroke-width="3" fill="none" />`;
-          });
-        }
-
-        const u2 = units.find((u) => u.dataset.id === "2");
-        const pduTargets = units.filter((u) => u.dataset.pwr === "pdu");
-        if (u2 && pduTargets.length > 0) {
-          const startY = getCenterY(u2, rackRect);
-          const endY = getCenterY(pduTargets[pduTargets.length - 1], rackRect);
-          const busX = rackRect.width - 15;
-          svgHTML += `<path d="M ${busX} ${startY} L ${busX} ${endY}" stroke="var(--c-power)" stroke-width="3" fill="none" />`;
-          svgHTML += `<path d="M ${busX} ${startY} L ${busX - 35} ${startY}" stroke="var(--c-power)" stroke-width="3" fill="none" />`;
-          pduTargets.forEach((tgt) => {
-            svgHTML += `<path d="M ${busX} ${getCenterY(tgt, rackRect)} L ${busX - 35} ${getCenterY(tgt, rackRect)}" stroke="var(--c-power)" stroke-width="3" fill="none" />`;
-          });
-        }
-        svgLayer.innerHTML = svgHTML;
+      function buildUPS() {
+        return `
+                <div class="cb-wrap">
+                    <div class="cb-title" style="color:var(--glow-ups)">Power Routing Logic</div>
+                    <div style="display:flex; gap: 1.5rem; flex-wrap: wrap;">
+                        <div style="flex: 1; min-width: 250px; background: rgba(16,185,129,0.1); border: 1px solid var(--glow-ups); padding: 1.5rem; border-radius: 8px;">
+                            <h4 style="color: var(--glow-ups); margin-bottom: 8px; font-size:1.1rem;">🔋 Battery Backup</h4>
+                            <p style="font-size:0.85rem; color: #cbd5e1; line-height: 1.6;">Routes to the <strong>Synology RAID NAS (U3)</strong> and <strong>24-Port Switch (U7)</strong>. In a power outage, these critical IT components continue to function safely, ensuring data is not corrupted and the network stays alive.</p>
+                        </div>
+                        <div style="flex: 1; min-width: 250px; background: rgba(234,179,8,0.1); border: 1px solid var(--glow-srg); padding: 1.5rem; border-radius: 8px;">
+                            <h4 style="color: var(--glow-srg); margin-bottom: 8px; font-size:1.1rem;">⚡ Surge Protection Only</h4>
+                            <p style="font-size:0.85rem; color: #cbd5e1; line-height: 1.6;">Routes to the <strong>10-Switch PDU (U2)</strong>. During an outage, non-critical A/V equipment drops power safely, preserving the limited UPS battery exclusively for the IT core.</p>
+                        </div>
+                    </div>
+                </div>
+            `;
       }
 
-      // Toggles
+      function buildPDU() {
+        const outlets = [
+          { id: 1, name: "Sisters A/V<br>(U9)", emp: false },
+          { id: 2, name: "Empty", emp: true },
+          { id: 3, name: "Empty", emp: true },
+          { id: 4, name: "Empty", emp: true },
+          { id: 5, name: "Web Presenter<br>(U5)", emp: false },
+          { id: 6, name: "ATEM Switcher<br>(U5)", emp: false },
+          { id: 7, name: "Empty", emp: true },
+          { id: 8, name: "Empty", emp: true },
+          { id: 9, name: "Empty", emp: true },
+          { id: 10, name: "Exhaust Fans<br>(U15)", emp: false },
+        ];
+
+        return `
+                <div class="cb-wrap">
+                    <div class="cb-title" style="color:var(--glow-pow)">Power Distribution (Click to Toggle)</div>
+                    <div class="pdu-grid">
+                        ${outlets
+                          .map(
+                            (o) => `
+                            <div id="pdu-out-${o.id}" class="pdu-outlet ${o.emp ? "empty" : "occupied"} ${pduState[o.id] ? "active" : ""}" ${o.emp ? "" : `onclick="togglePDU(${o.id})"`}>
+                                <div class="pdu-num">CH ${o.id}</div>
+                                <div class="pdu-holes">
+                                    <div class="hole-pair"><div class="p-hole"></div><div class="p-hole"></div></div>
+                                    <div class="p-pin"></div>
+                                </div>
+                                <div class="pdu-label">${o.name}</div>
+                            </div>
+                        `,
+                          )
+                          .join("")}
+                    </div>
+                </div>
+            `;
+      }
+
+      function buildAtem() {
+        const aCls = !pduState[6] ? "power-off" : "";
+        const wCls = !pduState[5] ? "power-off" : "";
+
+        return `
+                <div class="cb-wrap cb-scroll" id="atem-board">
+                    <div class="cb-title">Routing Schematic</div>
+                    <svg id="atem-wires"></svg>
+                    <div class="atem-grid">
+                        <div class="c-col" id="col-in">
+                            <div class="c-node cam" id="in-c1"><span>SDI (Patch Port 5)</span>Camera 1</div>
+                            <div class="c-node cam" id="in-c2"><span>SDI (Patch Port 6)</span>Camera 2</div>
+                            <div class="c-node cam" id="in-c3"><span>SDI (Patch Port 7)</span>Camera 3</div>
+                            <div class="c-node cam" id="in-c4"><span>SDI (Patch Port 8)</span>Camera 4</div>
+                            <div class="c-node aud" id="in-al"><span>XLR (Mixer Aux 4)</span>Audio Left</div>
+                            <div class="c-node aud" id="in-ar"><span>XLR (Mixer Aux 4)</span>Audio Right</div>
+                        </div>
+
+                        <div class="c-col" style="flex-direction: row; gap: 2rem;">
+                            <div class="c-core atem ${aCls}" id="core-atem"><h3>ATEM Switcher</h3><small>PDU Ch.6</small></div>
+                            <div class="c-core wp ${wCls}" id="core-wp"><h3>Web Presenter</h3><small>PDU Ch.5</small></div>
+                        </div>
+
+                        <div class="c-col" id="col-out">
+                            <div class="c-node av" id="out-mv"><span>HDMI Multiview</span>Media TV</div>
+                            <div class="c-node av" id="out-aux"><span>SDI AUX Output</span>Unit 9 Pipeline</div>
+                            <div class="c-node dat" id="out-usb"><span>USB-C Webcam Out</span>Media PC</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+      }
+
+      function drawAtemWires() {
+        const svg = document.getElementById("atem-wires");
+        const board = document.getElementById("atem-board");
+        if (!svg || !board) return;
+        const bR = board.getBoundingClientRect();
+
+        const getPt = (id, side) => {
+          const el = document.getElementById(id);
+          if (!el) return { x: 0, y: 0 };
+          const r = el.getBoundingClientRect();
+          return {
+            x: side === "r" ? r.right - bR.left : r.left - bR.left,
+            y: r.top - bR.top + r.height / 2,
+          };
+        };
+
+        const drawCubic = (p1, p2, col, label = "") => {
+          const midX = p1.x + (p2.x - p1.x) / 2;
+          let str = `<path d="M ${p1.x} ${p1.y} C ${midX} ${p1.y}, ${midX} ${p2.y}, ${p2.x} ${p2.y}" fill="none" stroke="${col}" stroke-width="2" class="beam" opacity="0.8"/>`;
+          if (label)
+            str += `<text x="${midX}" y="${p1.y - 6}" fill="${col}" font-family="monospace" font-size="10" text-anchor="middle">${label}</text>`;
+          return str;
+        };
+
+        const atL = getPt("core-atem", "l");
+        const atR = getPt("core-atem", "r");
+        const wpL = getPt("core-wp", "l");
+        const wpR = getPt("core-wp", "r");
+
+        let paths = "";
+        ["in-c1", "in-c2", "in-c3", "in-c4"].forEach(
+          (id) => (paths += drawCubic(getPt(id, "r"), atL, "var(--glow-cam)")),
+        );
+        ["in-al", "in-ar"].forEach(
+          (id) => (paths += drawCubic(getPt(id, "r"), atL, "var(--glow-aud)")),
+        );
+        paths += drawCubic(atR, wpL, "var(--glow-dat)", "PRGRM SDI");
+        paths += drawCubic(atR, getPt("out-mv", "l"), "var(--glow-av)");
+        paths += drawCubic(atR, getPt("out-aux", "l"), "var(--glow-av)");
+        paths += drawCubic(wpR, getPt("out-usb", "l"), "var(--glow-dat)");
+
+        svg.innerHTML = paths;
+      }
+
+      function buildPorts(isPatch) {
+        let topRow, botRow;
+
+        if (isPatch) {
+          // Patch Panel is 1-12 top, 13-24 bot
+          topRow = PORTS.slice(0, 12);
+          botRow = PORTS.slice(12, 24);
+        } else {
+          // Switch is Even top, Odd bot
+          topRow = PORTS.filter((p) => p.p % 2 !== 0);
+          botRow = PORTS.filter((p) => p.p % 2 === 0);
+        }
+
+        const renderPort = (p) => {
+          let plugClass = p.t !== "none" ? `plug pt-${p.t}` : "";
+          let poeIcon = p.poe ? `<div class="poe-icon">⚡</div>` : "";
+
+          let pwrStr = p.poe
+            ? "DATA + POWER (PoE)"
+            : p.t === "dat" || p.t === "up"
+              ? "DATA ONLY"
+              : p.t === "cam"
+                ? "DATA ONLY"
+                : p.t === "av"
+                  ? "A/V SIGNAL"
+                  : "EMPTY";
+          if (p.t === "cam" && p.poe) pwrStr = "DATA + POWER (PoE)";
+          let tip = `Port ${p.p}: ${p.l}&#10;[${pwrStr}]`;
+
+          return `<div class="rj45-port ${plugClass}" data-tip="${tip}">${p.p}${poeIcon}</div>`;
+        };
+
+        let title = isPatch
+          ? "Passive Wall Terminations"
+          : "Active Network Connections (PoE)";
+        return `
+                <div class="cb-wrap">
+                    <div class="cb-title">${title}</div>
+                    <div class="rj45-grid">
+                        ${topRow.map((p) => renderPort(p)).join("")}
+                    </div>
+                    <div class="rj45-grid" style="margin-top: 4px;">
+                        ${botRow.map((p) => renderPort(p)).join("")}
+                    </div>
+                </div>
+            `;
+      }
+
+      function buildPipeline() {
+        const pCls = !pduState[1] ? "power-off" : "";
+        return `
+                <div class="cb-wrap ${pCls}" id="pipe-board">
+                    <div class="cb-title">Physical A/V Pipeline</div>
+                    <div class="pl-wrap">
+                        <div class="pl-node" style="border-top: 3px solid var(--glow-dat);">
+                            <h4>ATEM AUX Output (SDI)</h4><p>Source from Unit 5</p>
+                        </div>
+                        <div class="pl-pipe-v"></div>
+                        
+                        <div class="pl-node" style="border-color: var(--glow-pow);">
+                            <div class="pl-tag">5V USB-C</div>
+                            <h4>Blackmagic Converter</h4><p>Converts SDI to HDMI</p>
+                        </div>
+                        <div class="pl-pipe-v"></div>
+
+                        <div class="pl-node" style="border-color: var(--glow-cam);">
+                            <h4>HDMI Splitter</h4><p>1 In, 2 Out Duplicator</p>
+                        </div>
+                        
+                        <div style="display:flex; width: 100%; max-width: 600px;">
+                            <div style="width: 50%; border-right: 4px solid #475569; border-top: 4px solid #475569; height: 20px; border-top-left-radius: 8px;"></div>
+                            <div style="width: 50%; border-left: 4px solid transparent; border-top: 4px solid #475569; height: 20px; border-top-right-radius: 8px;"></div>
+                        </div>
+
+                        <div class="pl-fork">
+                            <div class="pl-branch">
+                                <div class="pl-node"><h4>HDMI to Ethernet Receiver</h4><p>Transmits signal over Cat6</p></div>
+                                <div class="pl-pipe-v"></div>
+                                <div class="pl-node"><h4>Patch Panel Port 21</h4><p>Wall Run to Sisters Area</p></div>
+                                <div class="pl-pipe-v"></div>
+                                <div class="pl-node" style="border-bottom: 3px solid var(--glow-av); background:#0f172a;"><h4>Sisters TVs</h4><p>Final Display</p></div>
+                            </div>
+                            <div class="pl-branch">
+                                <div class="pl-join">
+                                    <div class="pl-node" style="background:#0f172a;"><p>Patch Panel Port 18<br>(Desk Wall Plug)</p></div>
+                                    <span style="color:#475569; font-weight:bold;">➔</span>
+                                    <div class="pl-node"><h4>4-Way HDMI Switch</h4><p>Selects between ATEM or Wall</p></div>
+                                </div>
+                                <div class="pl-pipe-v"></div>
+                                <div class="pl-node" style="border-bottom: 3px solid var(--glow-av); background:#0f172a;"><h4>Main Projector Matrix</h4><p>Final Display</p></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+      }
+
+      // --- BUTTON CONTROLS --- //
       document.getElementById("btn-airflow").onclick = function () {
-        activeUnitId = null;
-        rackDOM.classList.remove("has-selection");
+        activeId = null;
+        hudDOM.innerHTML = emptyState;
+        svgLayer.innerHTML = "";
+        rackDOM.classList.remove("focused");
         document
           .querySelectorAll(".rack-unit")
           .forEach((el) =>
             el.classList.remove("selected", "related-highlight"),
           );
-        panelDOM.innerHTML = emptyStateHTML;
-        svgLayer.innerHTML = "";
 
-        document.body.classList.toggle("mode-airflow");
-        this.classList.toggle("active");
-        if (document.body.classList.contains("mode-airflow")) {
-          document.body.classList.remove("mode-power");
-          document.getElementById("btn-power").classList.remove("active");
+        document.body.classList.toggle("air-mode");
+        this.classList.toggle("active-air");
+        if (document.body.classList.contains("air-mode")) {
+          document.body.classList.remove("pwr-mode");
+          document.getElementById("btn-power").classList.remove("active-pwr");
         }
       };
 
       document.getElementById("btn-power").onclick = function () {
-        activeUnitId = null;
-        rackDOM.classList.remove("has-selection");
+        activeId = null;
+        hudDOM.innerHTML = emptyState;
+        svgLayer.innerHTML = "";
+        rackDOM.classList.remove("focused");
         document
           .querySelectorAll(".rack-unit")
           .forEach((el) =>
             el.classList.remove("selected", "related-highlight"),
           );
-        panelDOM.innerHTML = emptyStateHTML;
-        svgLayer.innerHTML = "";
 
-        document.body.classList.toggle("mode-power");
-        this.classList.toggle("active");
+        document.body.classList.toggle("pwr-mode");
+        this.classList.toggle("active-pwr");
+        if (document.body.classList.contains("pwr-mode")) {
+          document.body.classList.remove("air-mode");
+          document.getElementById("btn-airflow").classList.remove("active-air");
 
-        if (document.body.classList.contains("mode-power")) {
-          document.body.classList.remove("mode-airflow");
-          document.getElementById("btn-airflow").classList.remove("active");
-          setTimeout(drawGlobalPowerLines, 50);
+          let html = "";
+          const w = rackDOM.getBoundingClientRect().width;
+          const drawBus = (srcId, tgts, col, offset, dashed) => {
+            if (tgts.length === 0) return "";
+            const ys = [getCY(srcId), ...tgts.map((id) => getCY(id))];
+            const busX = w - offset;
+            const dashAttr = dashed ? 'stroke-dasharray="4 6"' : "";
+            const dashCls = dashed ? "surge-beam" : "beam";
+            let str = `<path d="M ${busX} ${Math.min(...ys)} L ${busX} ${Math.max(...ys)}" stroke="${col}" ${dashAttr} stroke-width="3" fill="none" opacity="0.8"/>`;
+            [srcId, ...tgts].forEach((id) => {
+              const y = getCY(id);
+              str += `<path d="M ${busX} ${y} L ${busX - 14} ${y}" stroke="${col}" ${dashAttr} stroke-width="3" fill="none" class="${dashCls}" opacity="0.8"/>`;
+              str += `<circle cx="${busX - 14}" cy="${y}" r="3" fill="${col}"/>`;
+            });
+            return str;
+          };
+
+          html += drawBus(1, [3, 7], "var(--glow-ups)", 14, false);
+          html += drawBus(1, [2], "var(--glow-srg)", 24, true);
+          html += drawBus(2, [5, 9, 15], "var(--glow-pow)", 34, false);
+          svgLayer.innerHTML = html;
         }
       };
 
       window.addEventListener("resize", () => {
-        if (document.body.classList.contains("mode-power")) {
-          drawGlobalPowerLines();
-        } else if (activeUnitId) {
-          const activeData = RACK.find((u) => u.id === activeUnitId);
-          drawSelectionLines(activeData);
+        if (document.body.classList.contains("pwr-mode")) {
+          const btn = document.getElementById("btn-power");
+          btn.click();
+          btn.click();
+        } else if (activeId) {
+          const data = SYS.find((u) => u.id === activeId);
+          drawRackLines(data);
+          if (data.isAtem) drawAtemWires();
         }
       });
     </script>
